@@ -79,9 +79,10 @@ with st.expander("Heart Rate Data"):
 
     else:
 
-     scr_line_chart("Trial_Data/data.csv", x="Time", y="Heart Rate")
-x = []
-y = []
+
+     x = []
+     y = []
+scr_line_chart("Trial_Data/data.csv", x="Time", y="Heart Rate")
 st.download_button(
             label="Download Heart rate data as excel csv file",
             data=heart_rate_data(index=False)
