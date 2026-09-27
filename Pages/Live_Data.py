@@ -78,12 +78,13 @@ with st.expander("Heart Rate Data"):
         st.error("Error: Heart Rate Data Not Found")
 
     else:
-    
-        st.download_button(
+     x = []
+y = []
+st.download_button(
             label="Download Heart rate data as excel csv file",
             data=heart_rate_data.to_csv(index=False)
          )
-        scr_line_chart("Trial_Data/data.csv", "Time", "Heart Rate")
+scr_line_chart("Trial_Data/data.csv", x="Time", y="Heart Rate")
         #TODO: implement heart rate data graphs
 
 #endregion Heart Rate
