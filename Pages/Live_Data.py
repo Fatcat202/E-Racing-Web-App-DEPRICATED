@@ -72,50 +72,46 @@ vibration_data = None
 #region Data Visualizer
 
 #region Heart Rate
-
+heart_rate_data = True
 with st.expander("Heart Rate Data"):
     if(heart_rate_data == None):
         st.error("Error: Heart Rate Data Not Found")
     else:
-        scr_line_chart("Trial_Data/Data.csv", "aa", "ab")
+        scr_line_chart("Trial_Data/data.csv", "Time", "Heart Rate")
         #TODO: implement heart rate data graphs
 
 #endregion Heart Rate
 
 #region Suspension
 
-with st.expander("Left Suspension Data"):
+with st.expander("Suspension Data"):
 
     #Left Front Suspension
     if(lf_suspension_data == None):
         st.error("Error: LF Suspension Data Not Found")
-#    else:
+   # else:
         #TODO: implement left front data graph
 
-with st.expander("Right Suspension Data"):
-   
     #Right Front Suspension
     if(rf_suspension_data == None):
         st.error("Error: RF Suspension Data Not Found")
-#    else:
+   # else:
         #TODO: implement right front data graph
 
-with st.expander("Left Rear Suspension Data"):
     #Left Rear Suspension
     if(lr_suspension_data == None):
         st.error("Error: LR Suspension Data Not Found")
-#    else:
-    #TODO: implement left rear data graph
+   # else:
+        #TODO: implement left rear data graph
 
-with st.expander("Right Rear Suspension Data"):
     #Right Rear Suspension
     if(rr_suspension_data == None):
         st.error("Error: RR Suspension Data Not Found")
-#    else:
+   # else:
         #TODO: implement right rear data graph
 
 #endregion Suspension
-        
+         
 #region Motor
 
 with st.expander("Motor Data"):
