@@ -84,7 +84,7 @@ x = []
 y = []
 st.download_button(
             label="Download Heart rate data as excel csv file",
-            data=heart_rate_data.to_csv(index=False)
+            data=heart_rate_data(index=False)
          )
 
         #TODO: implement heart rate data graphs
