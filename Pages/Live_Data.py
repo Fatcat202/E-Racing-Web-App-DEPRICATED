@@ -83,7 +83,7 @@ with st.expander("Heart Rate Data"):
             label="Download Heart rate data as excel csv file",
             data=heart_rate_data.to_csv(index=False)
          )
-        scr_line_chart("Trial_Data/Data.csv", "aa", "ab")
+        scr_line_chart("Trial_Data/data.csv", "aa", "ab")
         #TODO: implement heart rate data graphs
 
 #endregion Heart Rate
