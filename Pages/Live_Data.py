@@ -72,12 +72,12 @@ vibration_data = None
 #region Data Visualizer
 
 #region Heart Rate
-
+heart_rate_data = True
 with st.expander("Heart Rate Data"):
     if(heart_rate_data == None):
         st.error("Error: Heart Rate Data Not Found")
     else:
-        scr_line_chart("Trial_Data/Data.csv", "aa", "ab")
+        scr_line_chart("Trial_Data/data.csv", "Time", "Heart Rate")
         #TODO: implement heart rate data graphs
 
 #endregion Heart Rate

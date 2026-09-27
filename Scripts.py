@@ -47,4 +47,4 @@ def scr_line_chart(file_name = "", x_title = "", y_title = ""):
     y = [] # where the csv data of the other coloumn of the chart goes before it goes into the chart
 
     df = pd.read_csv(file_name)
-    st.line_chart(df, x_title, y_title) # create the chart and assign the chart axis with the right headings #
+    st.line_chart(df, x = x_title, y = y_title) # create the chart and assign the chart axis with the right headings #
