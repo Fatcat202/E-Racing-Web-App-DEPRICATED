@@ -21,11 +21,16 @@ def scr_calculate_heart_rate_zone(heart_rate=0, age=0):
     elif(percent_HRmax >= 0.71 and percent_HRmax <= 0.8):
         intensity_zone = "Zone 3"
     elif(percent_HRmax >= 0.81 and percent_HRmax <= 0.9):
-            intensity_zone = "Zone 3"
+        intensity_zone = "Zone 4"
     elif(percent_HRmax >= 0.91 and percent_HRmax <= 1.0):
-            intensity_zone = "Zone 5"
+        intensity_zone = "Zone 5"
     elif(percent_HRmax > 1.0):
-            intensity_zone = "Warning: Zone Over 5"
+        intensity_zone = "Warning: Zone Over 5"
     
     # Output percentage of HRmax
     return percent_HRmax, intensity_zone
+
+
+
+
+
