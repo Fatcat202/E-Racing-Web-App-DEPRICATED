@@ -1,4 +1,11 @@
 import streamlit as st          #pip install streamlit
+import pandas as pd             #streamlit dependency
+import numpy as np              #streamlit dependency
+import csv                      #
+import pathlib as pl            # pip install pathlib
+from Scripts import scr_line_chart
+
+
 
 #Page used to display live data
 
@@ -69,37 +76,42 @@ vibration_data = None
 with st.expander("Heart Rate Data"):
     if(heart_rate_data == None):
         st.error("Error: Heart Rate Data Not Found")
-   # else:
+    else:
+        scr_line_chart("Trial_Data/Data.csv", "aa", "ab")
         #TODO: implement heart rate data graphs
 
 #endregion Heart Rate
 
 #region Suspension
 
-with st.expander("Suspension Data"):
+with st.expander("Left Suspension Data"):
 
     #Left Front Suspension
     if(lf_suspension_data == None):
         st.error("Error: LF Suspension Data Not Found")
-   # else:
+#    else:
         #TODO: implement left front data graph
 
+with st.expander("Right Suspension Data"):
+   
     #Right Front Suspension
     if(rf_suspension_data == None):
         st.error("Error: RF Suspension Data Not Found")
-   # else:
+#    else:
         #TODO: implement right front data graph
 
+with st.expander("Left Rear Suspension Data"):
     #Left Rear Suspension
     if(lr_suspension_data == None):
         st.error("Error: LR Suspension Data Not Found")
-   # else:
-        #TODO: implement left rear data graph
+#    else:
+    #TODO: implement left rear data graph
 
+with st.expander("Right Rear Suspension Data"):
     #Right Rear Suspension
     if(rr_suspension_data == None):
         st.error("Error: RR Suspension Data Not Found")
-   # else:
+#    else:
         #TODO: implement right rear data graph
 
 #endregion Suspension
@@ -109,7 +121,7 @@ with st.expander("Suspension Data"):
 with st.expander("Motor Data"):
     if(motor_data == None):
         st.error("Error: Motor Data Not Found")
-   # else:
+ #   else:
         #TODO: implement motor data graphs
 
 #endregion Motor
@@ -119,7 +131,7 @@ with st.expander("Motor Data"):
 with st.expander("HV Battery Data"):
     if(hv_battery_data == None):
         st.error("Error: HV Battery Data Not Found")
-   # else:
+ #   else:
         #TODO: implement HV battery data graphs
 
 #endregion HV Battery
@@ -129,7 +141,7 @@ with st.expander("HV Battery Data"):
 with st.expander("LV Battery Data"):
     if(lv_battery_data == None):
         st.error("Error: LV Battery Data Not Found")
-   # else:
+ #   else:
         #TODO: implement LV battery data graphs
 
 #endregion LV Battery
@@ -139,7 +151,7 @@ with st.expander("LV Battery Data"):
 with st.expander("Aero Data"):
     if(aero_data == None):
         st.error("Error: Aero Data Not Found")
-   # else:
+  #  else:
         #TODO: implement Aero data graphs
 
 #endregion Aero Data
@@ -150,7 +162,7 @@ with st.expander("Aero Data"):
 with st.expander("Speed Data"):
     if(speed_data == None):
         st.error("Error: Speed Data Not Found")
-   # else:
+ #   else:
         #TODO: implement Speed data graphs
 
 #endregion Speed
@@ -161,7 +173,7 @@ with st.expander("Speed Data"):
 with st.expander("Attitude Data"):
     if(attitude_data == None):
         st.error("Error: Attitude Data Not Found")
-   # else:
+ #   else:
         #TODO: implement Attitude data graphs
 
 #endregion Attitude
@@ -172,7 +184,7 @@ with st.expander("Attitude Data"):
 with st.expander("Odometer Data"):
     if(odometer_data == None):
         st.error("Error: Odometer Data Not Found")
-   # else:
+    #else:
         #TODO: implement Odometer data graphs
 
 #endregion Odometer
@@ -183,8 +195,8 @@ with st.expander("Odometer Data"):
 with st.expander("Acceleration Data"):
     if(acceleration_data == None):
         st.error("Error: Acceleration Data Not Found")
-   # else:
-        #TODO: implement Acceleration data graphs
+ #   else:
+    #TODO: implement Acceleration data graphs (mohammed-done)
 
 #endregion Acceleration
 
@@ -192,20 +204,20 @@ with st.expander("Acceleration Data"):
 
 # Gathered from CAN
 with st.expander("Angular Data"):
-    if(angular_data == None):
+ if(angular_data == None):
         st.error("Error: Angular Data Not Found")
-   # else:
-        #TODO: implement Angular data graphs
+# else:
+    #TODO: implement Angular data graphs
 
 #endregion Angular Data
 
 #region Vibration Data
 
 with st.expander("Vibration Data"):
-    if(vibration_data == None):
+ if(vibration_data == None):
         st.error("Error: Vibration Data Not Found")
-   # else:
-        #TODO: implement Vibration data graphs
+# else:
+     #TODO: implement Vibration data graphs
 
 #endregion Vibration Data
 
