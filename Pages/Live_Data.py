@@ -83,7 +83,7 @@ with st.expander("Heart Rate Data"):
 
 
 
-     scr_line_chart("Trial_Data/heart_rate_data.csv", x="Time", y="Heart Rate")
+     scr_line_chart("Trial_Data/data.csv","Time", "Heart Rate")
 
 
         #TODO: implement heart rate data graphs
