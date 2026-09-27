@@ -74,7 +74,7 @@ vibration_data = None
 #region Heart Rate
 
 with st.expander("Heart Rate Data"):
-    if(heart_rate_data == None):
+    if(heart_rate_data is None):
         st.error("Error: Heart Rate Data Not Found")
 
     else:
