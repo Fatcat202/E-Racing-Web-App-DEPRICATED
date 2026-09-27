@@ -1,0 +1,16 @@
+import streamlit as st # streamlit library
+import pandas as pd # streamlit dependency
+import numpy as np # streamlit dependency
+import pathlib as pl # for finding the csv and opening it 
+
+
+
+x = [] # where the csv data of one coloumn of the chart goes 
+y = [] # where the csv data of the other coloumn of the chart goes before it goes into the chart
+
+st.title ("standing on the shoulders of giants") # page title (unnecessary)
+pl.Path(__file__).parent / "data.csv" # find the file
+df = pd.read_csv( # open the file and read contents
+    r"C:\Users\testuser\OneDrive\Documenti\attempt\data.csv" #the file address
+)
+st.line_chart(df, x="heartbeat", y="throttle") # create the chart and assign the chart axis with the right headings 
