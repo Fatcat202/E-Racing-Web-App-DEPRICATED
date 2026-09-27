@@ -72,7 +72,7 @@ vibration_data = None
 #region Data Visualizer
 
 #region Heart Rate
-heart_rate_data = True
+
 with st.expander("Heart Rate Data"):
     if(heart_rate_data is None):
         st.error("Error: Heart Rate Data Not Found")
@@ -80,12 +80,13 @@ with st.expander("Heart Rate Data"):
     else:
 
 
+     
      x = []
      y = []
-scr_line_chart("Trial_Data/data.csv", x="Time", y="Heart Rate")
+     scr_line_chart("Trial_Data/heart_rate_data.csv", x="Time", y="Heart Rate")
 st.download_button(
             label="Download Heart rate data as excel csv file",
-            data=heart_rate_data(index=False)
+            data=heart_rate_data.to_csv(index=False)
          )
 
         #TODO: implement heart rate data graphs
