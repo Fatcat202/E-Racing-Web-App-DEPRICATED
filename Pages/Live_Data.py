@@ -88,7 +88,7 @@ with st.expander("Heart Rate Data"):
      current_bpm = heart_rate_df["Heart Rate"]
      col1.metric(
         label=" Driver BPM",
-        value="current_bpm"
+        value=current_bpm
      )
 
 
