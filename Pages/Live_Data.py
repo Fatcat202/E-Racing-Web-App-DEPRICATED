@@ -85,7 +85,7 @@ with st.expander("Heart Rate Data"):
      scr_line_chart("Trial_Data/data.csv","Time", "Heart Rate")
      col1, = st.columns(1)
      heart_rate_df = pd.read_csv("Trial_Data/data.csv")
-     current_bpm = heart_rate_df["Heart Rate"]
+     current_bpm = heart_rate_df["Heart Rate"].iloc[-1]
      col1.metric(
         label=" Driver BPM",
         value=current_bpm
