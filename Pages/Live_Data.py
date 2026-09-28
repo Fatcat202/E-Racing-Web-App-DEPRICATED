@@ -197,7 +197,6 @@ fig = go.Figure(go.Indicator(
         gauge={
             "axis": {"range": [0, 80]},
             "bar": {"color": "black"},
-            "thickness": 0.35,
             "steps": [
                 {"range": [0, 20], "color": "green"},
                 {"range": [20, 60], "color": "yellow"},
