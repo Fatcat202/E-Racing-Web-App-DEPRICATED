@@ -196,7 +196,7 @@ fig = go.Figure(go.Indicator(
         title={"text": "Speed (km/h)"},
         gauge={
             "axis": {"range": [0, 80]},
-            "bar": {"color": "#00cec9"},
+            "bar": {"color": "black"},
             "thickness": 0.35,
             "steps": [
                 {"range": [0, 20], "color": "green"},
