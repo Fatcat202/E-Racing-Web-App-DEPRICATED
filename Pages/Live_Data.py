@@ -213,8 +213,8 @@ fig = go.Figure(go.Indicator(
             "axis": {"range": [0, 80]},
             "bar": {"color": "#6d2076"},
             "steps": [
-                {"range": [0, 20], "color": "green"},
-                {"range": [20, 60], "color": "yellow"},
+                {"range": [0, 20], "color": "#12ff00"},
+                {"range": [20, 60], "color": "#f6ff00"},
                 {"range": [60, 80], "color": "red"},
             ]
         }
