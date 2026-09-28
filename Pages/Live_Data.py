@@ -177,7 +177,7 @@ with st.expander("Aero Data"):
      st.session_state.speed = 10
     speed = st.session_state.speed
 
-    st_autorefresh(interval=500, key="speed_refresh")
+    st_autorefresh(interval=800, key="speed_refresh")
 # simulate the speed changing
 change = random.uniform(-3, 4)
 st.session_state.speed += change
