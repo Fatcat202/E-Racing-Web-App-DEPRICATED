@@ -8,14 +8,6 @@ from Scripts import scr_line_chart, scr_calculate_heart_rate_zone
 
 #Page used to display live data
 
-#region Page Titles
-
-# Display title
-st.header("Live Data", divider=True)
-# Display sidebar title
-st.sidebar.markdown("Live Data")
-
-#endregion Page Titles
 
 
 #region Variables
@@ -65,8 +57,30 @@ angular_data = None
 # File holding vibration data
 vibration_data = None
 
+# Declares if a live connection to data is established, default false
+live_connection = False
+
 
 #endregion Variables
+
+
+#region Page Titles
+
+# Display title
+st.header("Live Data", divider=True)
+# Display sidebar title
+st.sidebar.markdown("Live Data")
+
+
+# Widget showing if connection to live data is active
+with st.sidebar:
+    if live_connection is True:
+        st.success("Live")
+    else:
+        st.error("No Data Stream")
+
+#endregion Page Titles
+
 
 #region Data Visualizer
 
@@ -84,16 +98,16 @@ with st.expander("Heart Rate Data"):
         # Creating Heart Rate chart
         HR_chart = scr_line_chart(testing_file, "Time", "Heart Rate")
 
-        # Placeholder data
-        testing_heart_rate = 162
-        active_heart_rate = testing_heart_rate
+        # Read most recent heart rate data
+        heart_rate_df = pd.read_csv(testing_file)
+        active_heart_rate = heart_rate_df["Heart Rate"].iloc[-1]
 
         # Numerical input for driver age
         driver_age = 0
         driver_age = st.number_input("Enter Driver Age:", min_value = 0, max_value = 99)
 
         # Calculate HR data
-        percent_HRmax, zone_HR = scr_calculate_heart_rate_zone(testing_heart_rate, driver_age)
+        percent_HRmax, zone_HR = scr_calculate_heart_rate_zone(active_heart_rate, driver_age)
         # Change from decimal to percent
         percent_HRmax *= 100
         # Modify percent to have a max of 4 digits
