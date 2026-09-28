@@ -86,7 +86,6 @@ with st.expander("Heart Rate Data"):
      col1, = st.columns(1)
      heart_rate_df = pd.read_csv("Trial_Data/data.csv")
      current_bpm = heart_rate_df["Heart Rate"]
-     current_bpm*30
      col1.metric(
         label=" Driver BPM",
         value="current_bpm"
