@@ -14,15 +14,15 @@ import numpy as np               #Streamlit dependency
 
 # Addition of E-Racing Logo
 st.logo(
-    image = "Images/e_racing_logo.png",
+    image = "Images/e_racing_logo.PNG",
     size = "large"
 )
 
 # Pages
-page_welcome = st.Page("pages/Welcome.py", title = "Welcome", default = True)
-page_live_data = st.Page("pages/Live_Data.py", title = "Live Data")
-page_load_data = st.Page("pages/Load_Data.py", title = "Load Data")
-page_driver_dash = st.Page("pages/Driver_Dash.py", title = "Driver Dash")
+page_welcome = st.Page("Pages/Welcome.py", title = "Welcome", default = True)
+page_live_data = st.Page("Pages/Live_Data.py", title = "Live Data")
+page_load_data = st.Page("Pages/Load_Data.py", title = "Load Data")
+page_driver_dash = st.Page("Pages/Driver_Dash.py", title = "Driver Dash")
 
 # Create navigation list
 nav = st.navigation([page_welcome, page_live_data, page_load_data, page_driver_dash])
