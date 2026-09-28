@@ -82,14 +82,14 @@ with st.expander("Heart Rate Data"):
         st.error("Error: Heart Rate Data Not Found")
 
     else:
-     col1 = st.columns(1)
+     scr_line_chart("Trial_Data/data.csv","Time", "Heart Rate")
+     col1, = st.columns(1)
      heart_rate_df = pd.read_csv("Trial_Data/data.csv")
      current_bpm = heart_rate_df["Heart Rate"].iloc[-1]
      col1.metric(
         label=" Driver BPM",
         value=f"{current_bpm:.0f}"
      )
-     scr_line_chart("Trial_Data/data.csv","Time", "Heart Rate")
 
 
         #TODO: implement heart rate data graphs
