@@ -171,24 +171,17 @@ with st.expander("Aero Data"):
 #region Speed
 
 # Gathered from CAN
-with st.expander("Speed Data"):
     if "speed" not in st.session_state:
      st.session_state.speed = 10
     speed = st.session_state.speed
 
     st_autorefresh(interval=1000, key="speed_refresh")
-
-
 # simulate the speed changing
-
 change = random.uniform(-3, 4)
-
 st.session_state.speed += change
-
 st.session_state.speed = max(
     20,
     min(76,st.session_state.speed)
-
 )
 fig = go.Figure(go.Indicator(
         mode="gauge+number",
@@ -200,12 +193,12 @@ fig = go.Figure(go.Indicator(
             "steps": [
                 {"range": [0, 20], "color": "green"},
                 {"range": [20, 60], "color": "yellow"},
-                {"range": [61, 80], "color": "red"},
+                {"range": [60, 80], "color": "red"},
             ]
         }
     ))
-
-st.plotly_chart(fig, use_container_width=True)
+with st.expander("Speed Data"):
+     st.plotly_chart(fig, use_container_width=True)
     #if(speed_data == None):
         #st.error("Error: Speed Data Not Found")
  #   else:
