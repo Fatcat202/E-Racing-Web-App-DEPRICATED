@@ -172,8 +172,25 @@ with st.expander("Aero Data"):
 
 # Gathered from CAN
 with st.expander("Speed Data"):
+    if "speed" not in st.session_state:
+     st.session_state.speed = 10
     speed = st.session_state.speed
-    fig = go.Figure(go.Indicator(
+
+    st_autorefresh(interval=1000, key="speed_refresh")
+
+
+# simulate the speed changing
+
+change = random.uniform(-3, 4)
+
+st.session_state.speed += change
+
+st.session_state.speed = max(
+    20,
+    min(76,st.session_state.speed)
+
+)
+fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=speed,
         title={"text": "Speed (km/h)"},
@@ -188,22 +205,7 @@ with st.expander("Speed Data"):
         }
     ))
 
-    st.plotly_chart(fig, use_container_width=True)
-    st_autorefresh(interval=1000, key="speed_refresh")
-if "speed" not in st.session_state:
-    st.session_state.speed = 10
-
-# simulate the speed changing
-
-change = random.uniform(-3, 4)
-
-st.session_state.speed += change
-
-st.session_state.speed = max(
-    20,
-    min(76,st.session_state.speed)
-
-)
+st.plotly_chart(fig, use_container_width=True)
     #if(speed_data == None):
         #st.error("Error: Speed Data Not Found")
  #   else:
