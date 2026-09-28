@@ -3,8 +3,7 @@ import pandas as pd             #streamlit dependency
 import numpy as np              #streamlit dependency
 import csv                      #
 import pathlib as pl            # pip install pathlib
-from Scripts import scr_line_chart
-
+from Scripts import scr_line_chart, scr_calculate_heart_rate_zone
 
 
 #Page used to display live data
@@ -72,12 +71,40 @@ vibration_data = None
 #region Data Visualizer
 
 #region Heart Rate
+
+# Set to true for testing
 heart_rate_data = True
 with st.expander("Heart Rate Data"):
     if(heart_rate_data == None):
         st.error("Error: Heart Rate Data Not Found")
     else:
-        scr_line_chart("Trial_Data/data.csv", "Time", "Heart Rate")
+        # Hard coded placeholder data
+        testing_file = "Trial_Data/data.csv"
+
+        # Creating Heart Rate chart
+        HR_chart = scr_line_chart(testing_file, "Time", "Heart Rate")
+
+        # Placeholder data
+        testing_heart_rate = 162
+        active_heart_rate = testing_heart_rate
+
+        # Numerical input for driver age
+        driver_age = 0
+        driver_age = st.number_input("Enter Driver Age:", min_value = 0, max_value = 99)
+
+        # Calculate HR data
+        percent_HRmax, zone_HR = scr_calculate_heart_rate_zone(testing_heart_rate, driver_age)
+        # Change from decimal to percent
+        percent_HRmax *= 100
+        # Modify percent to have a max of 4 digits
+        percent_HRmax = f'{percent_HRmax:.4}'
+
+        # Heart rate, Percent, and HR zone display
+        col1, col2, col3 = st.columns(3)
+        col1.metric(label = "Heart Rate", value = active_heart_rate, border = True)
+        col2.metric(label = "HRmax%", value = percent_HRmax, border = True)
+        col3.metric(label = "HR Zone", value = zone_HR, border = True)
+
         #TODO: implement heart rate data graphs
 
 #endregion Heart Rate
