@@ -3,8 +3,12 @@ import pandas as pd             #streamlit dependency
 import numpy as np              #streamlit dependency
 import csv                      #
 import pathlib as pl            # pip install pathlib
-from Scripts import scr_line_chart
-
+from Scripts import scr_line_chart #calling line chart script
+import time #pip install time
+import psutil # pip install psutil, for simulation
+from streamlit_autorefresh import st_autorefresh # pip install streamlit_autorefresh
+import random # dependency do not install, for simulation 
+import plotly.graph_objects as go 
 
 
 #Page used to display live data
@@ -168,8 +172,40 @@ with st.expander("Aero Data"):
 
 # Gathered from CAN
 with st.expander("Speed Data"):
-    if(speed_data == None):
-        st.error("Error: Speed Data Not Found")
+    speed = st.session_state.speed
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=speed,
+        title={"text": "Speed (km/h)"},
+        gauge={
+            "axis": {"range": [0, 80]},
+            "bar": {"color": "red"},
+            "steps": [
+                {"range": [0, 45], "color": "lightgreen"},
+                {"range": [46, 60], "color": "yellow"},
+                {"range": [61, 80], "color": "red"},
+            ]
+        }
+    ))
+
+    st.plotly_chart(fig, use_container_width=True)
+    st_autorefresh(interval=1000, key="speed_refresh")
+if "speed" not in st.session_state:
+    st.session_state.speed = 10
+
+# simulate the speed changing
+
+change = random.uniform(-3, 4)
+
+st.session_state.speed += change
+
+st.session_state.speed = max(
+    20,
+    min(76,st.session_state.speed)
+
+)
+    #if(speed_data == None):
+        #st.error("Error: Speed Data Not Found")
  #   else:
         #TODO: implement Speed data graphs
 
