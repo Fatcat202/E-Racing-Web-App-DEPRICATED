@@ -66,24 +66,6 @@ if(loaded_file is not None):
             # Creating Heart Rate chart
             HR_chart = scr_line_chart(loaded_file, "Time", "Heart Rate")
 
-            # Numerical input for driver age
-            driver_age = 0
-            driver_age = st.number_input("Enter Driver Age:", min_value = 0, max_value = 99)
-
-            # Calculate HR data
-            percent_HRmax, zone_HR = scr_calculate_heart_rate_zone(active_heart_rate, driver_age)
-            # Change from decimal to percent
-            percent_HRmax *= 100
-            # Modify percent to have a max of 4 digits
-            percent_HRmax = f'{percent_HRmax:.4}'
-
-            # Heart rate, Percent, and HR zone display
-            col1, col2, col3 = st.columns(3)
-            col1.metric(label = "Heart Rate", value = active_heart_rate, border = True)
-            col2.metric(label = "HRmax%", value = percent_HRmax, border = True)
-            col3.metric(label = "HR Zone", value = zone_HR, border = True)
-
-            #TODO: implement heart rate data graphs
 
     #endregion Heart Rate
 
