@@ -32,15 +32,3 @@ def scr_calculate_heart_rate_zone(heart_rate=0, age=0):
     
     # Output percentage of HRmax
     return percent_HRmax, intensity_zone
-  
-  
-# Script used to create a line chart
-def scr_line_chart(file_name = "", x_title = "", y_title = ""):
-    # Pass through file_name as string
-    # Pass through X and Y axis titles as strings
-
-    # Check file_name was passed through
-    if(not pl.Path.is_file(file_name)): return st.error("Error: File name not found")
-
-    df = pd.read_csv(file_name)
-    return st.line_chart(df, x = x_title, y = y_title) # create the chart and assign the chart axis with the right headings #
