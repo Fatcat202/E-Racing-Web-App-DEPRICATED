@@ -3,6 +3,7 @@ import pandas as pd             #streamlit dependency
 import numpy as np              #streamlit dependency
 import csv                      #
 import pathlib as pl            # pip install pathlib
+import glob                     # Used for reading files in folder
 from Scripts import scr_line_chart, scr_calculate_heart_rate_zone
 
 #Page used to display data from a previous trial
@@ -27,17 +28,30 @@ st.sidebar.markdown("Load Data")
 # File upload
 loaded_file = st.file_uploader("Pick a file", type = "csv")
 
-
 if(loaded_file is not None):
     # Read the contents of file loaded
     loaded_file_contents = pd.read_csv(loaded_file)
-    
-
-
-
 
 #endregion Data Loading
 
+#region Download
+
+# Create option array
+download_file_options = []
+
+# Find all files located in listed folder and add to array
+for file in glob.glob("Trial_Data/*"):
+    download_file_options.append(file)
+    
+# Allow selecting file for download
+selected_file = st.multiselect("Select a file to download:", options = download_file_options, max_selections=1, select_all = False)
+# If file is selected, allow for downloading file to local system
+if(len(selected_file) is not 0):
+    st.download_button(label = "Download File", data = selected_file[0])
+
+#endregion Download
+
+    
 
 #region Variables
 
