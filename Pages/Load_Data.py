@@ -1,5 +1,9 @@
 import streamlit as st          #pip install streamlit
-import csv
+import pandas as pd             #streamlit dependency
+import numpy as np              #streamlit dependency
+import csv                      #
+import pathlib as pl            # pip install pathlib
+from Scripts import scr_line_chart, scr_calculate_heart_rate_zone
 
 #Page used to display data from a previous trial
 
@@ -13,57 +17,34 @@ st.sidebar.markdown("Load Data")
 
 #endregion Page Titles
 
-# File upload
-file = st.file_uploader("Pick a file", type = "csv")
 
+
+
+
+#Region Data Loading
+
+
+# File upload
+loaded_file = st.file_uploader("Pick a file", type = "csv")
+
+
+if(loaded_file is not None):
+    # Read the contents of file loaded
+    loaded_file_contents = pd.read_csv(loaded_file)
+    
+
+
+
+
+#endregion Data Loading
 
 
 #region Variables
 
-# File holding heart rate data
-heart_rate_data = None
 
-#  File holding left front suspension data
-lf_suspension_data = None
 
-#  File holding left front suspension data
-rf_suspension_data = None
 
-#  File holding left front suspension data
-lr_suspension_data = None
-
-#  File holding left front suspension data
-rr_suspension_data = None
-
-# File holding motor data
-motor_data = None
-
-# File holding HV battery data
-hv_battery_data = None
-
-# File holding LV battery data
-lv_battery_data = None
-
-# File holding aero data
-aero_data = None
-
-# File holding speed data
-speed_data = None
-
-# File holding attitude data
-attitude_data = None
-
-# File holding odometer data
-odometer_data = None
-
-# File holding acceleration data
-acceleration_data = None
-
-# File holding angular data
-angular_data = None
-
-# File holding vibration data
-vibration_data = None
+#endregion Variables
 
 
 #endregion Variables
@@ -71,152 +52,176 @@ vibration_data = None
 
 #region Data Visualizer
 
-#region Heart Rate
+if(loaded_file is not None):
 
-with st.expander("Heart Rate Data"):
-    if(heart_rate_data == None):
-        st.error("Error: Heart Rate Data Not Found")
-   # else:
-        #TODO: implement heart rate data graphs
+    #region Heart Rate
 
-#endregion Heart Rate
+    # Set to true for testing
+    with st.expander("Heart Rate Data"):
+        # Check if necessary data types exist
+        if(not "Heart Rate" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Heart Rate Data Not Found")
+        else:
 
-#region Suspension
+            # Creating Heart Rate chart
+            HR_chart = scr_line_chart(loaded_file, "Time", "Heart Rate")
 
-with st.expander("Suspension Data"):
+            # Numerical input for driver age
+            driver_age = 0
+            driver_age = st.number_input("Enter Driver Age:", min_value = 0, max_value = 99)
 
-    #Left Front Suspension
-    if(lf_suspension_data == None):
-        st.error("Error: LF Suspension Data Not Found")
-   # else:
-        #TODO: implement left front data graph
+            # Calculate HR data
+            percent_HRmax, zone_HR = scr_calculate_heart_rate_zone(active_heart_rate, driver_age)
+            # Change from decimal to percent
+            percent_HRmax *= 100
+            # Modify percent to have a max of 4 digits
+            percent_HRmax = f'{percent_HRmax:.4}'
 
-    #Right Front Suspension
-    if(rf_suspension_data == None):
-        st.error("Error: RF Suspension Data Not Found")
-   # else:
-        #TODO: implement right front data graph
+            # Heart rate, Percent, and HR zone display
+            col1, col2, col3 = st.columns(3)
+            col1.metric(label = "Heart Rate", value = active_heart_rate, border = True)
+            col2.metric(label = "HRmax%", value = percent_HRmax, border = True)
+            col3.metric(label = "HR Zone", value = zone_HR, border = True)
 
-    #Left Rear Suspension
-    if(lr_suspension_data == None):
-        st.error("Error: LR Suspension Data Not Found")
-   # else:
-        #TODO: implement left rear data graph
+            #TODO: implement heart rate data graphs
 
-    #Right Rear Suspension
-    if(rr_suspension_data == None):
-        st.error("Error: RR Suspension Data Not Found")
-   # else:
-        #TODO: implement right rear data graph
+    #endregion Heart Rate
 
-#endregion Suspension
-        
-#region Motor
+    #region Suspension
 
-with st.expander("Motor Data"):
-    if(motor_data == None):
-        st.error("Error: Motor Data Not Found")
-   # else:
-        #TODO: implement motor data graphs
+    with st.expander("Suspension Data"):
 
-#endregion Motor
+        #Left Front Suspension
+        if(not "LF Suspension" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: LF Suspension Data Not Found")
+    # else:
+            #TODO: implement left front data graph
 
-#region HV Battery
+        #Right Front Suspension
+        if(not "RF Suspension" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: RF Suspension Data Not Found")
+    # else:
+            #TODO: implement right front data graph
 
-with st.expander("HV Battery Data"):
-    if(hv_battery_data == None):
-        st.error("Error: HV Battery Data Not Found")
-   # else:
-        #TODO: implement HV battery data graphs
+        #Left Rear Suspension
+        if(not "LR Suspension" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: LR Suspension Data Not Found")
+    # else:
+            #TODO: implement left rear data graph
 
-#endregion HV Battery
+        #Right Rear Suspension
+        if(not "RR Suspension" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: RR Suspension Data Not Found")
+    # else:
+            #TODO: implement right rear data graph
 
-#region LV Battery
+    #endregion Suspension
+            
+    #region Motor
 
-with st.expander("LV Battery Data"):
-    if(lv_battery_data == None):
-        st.error("Error: LV Battery Data Not Found")
-   # else:
-        #TODO: implement LV battery data graphs
+    with st.expander("Motor Data"):
+        if(not "RPM" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Motor Data Not Found")
+    #   else:
+            #TODO: implement motor data graphs
 
-#endregion LV Battery
+    #endregion Motor
 
-#region Aero Data
+    #region HV Battery
 
-with st.expander("Aero Data"):
-    if(aero_data == None):
-        st.error("Error: Aero Data Not Found")
-   # else:
-        #TODO: implement Aero data graphs
+    with st.expander("HV Battery Data"):
+        if(not "HV Charge" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: HV Battery Data Not Found")
+    #   else:
+            #TODO: implement HV battery data graphs
 
-#endregion Aero Data
+    #endregion HV Battery
 
-#region Speed
+    #region LV Battery
 
-# Gathered from CAN
-with st.expander("Speed Data"):
-    if(speed_data == None):
-        st.error("Error: Speed Data Not Found")
-   # else:
-        #TODO: implement Speed data graphs
+    with st.expander("LV Battery Data"):
+        if(not "LV Charge" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: LV Battery Data Not Found")
+    #   else:
+            #TODO: implement LV battery data graphs
 
-#endregion Speed
+    #endregion LV Battery
 
-#region Attitude
+    #region Aero Data
 
-# Gathered from CAN
-with st.expander("Attitude Data"):
-    if(attitude_data == None):
-        st.error("Error: Attitude Data Not Found")
-   # else:
-        #TODO: implement Attitude data graphs
+    with st.expander("Aero Data"):
+        if(not "Aero" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Aero Data Not Found")
+    #  else:
+            #TODO: implement Aero data graphs
 
-#endregion Attitude
+    #endregion Aero Data
 
-#region Odometer
+    #region Speed
 
-# Gathered from CAN
-with st.expander("Odometer Data"):
-    if(odometer_data == None):
-        st.error("Error: Odometer Data Not Found")
-   # else:
-        #TODO: implement Odometer data graphs
+    # Gathered from CAN
+    with st.expander("Speed Data"):
+        if(not "Speed" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Speed Data Not Found")
+    #   else:
+            #TODO: implement Speed data graphs
 
-#endregion Odometer
+    #endregion Speed
 
-#region Acceleration
+    #region Attitude
 
-# Gathered from CAN
-with st.expander("Acceleration Data"):
-    if(acceleration_data == None):
-        st.error("Error: Acceleration Data Not Found")
-   # else:
-        #TODO: implement Acceleration data graphs
+    # Gathered from CAN
+    with st.expander("Attitude Data"):
+        if(not "Attitude" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Attitude Data Not Found")
+    #   else:
+            #TODO: implement Attitude data graphs
 
-#endregion Acceleration
+    #endregion Attitude
 
-#region Angular Data
+    #region Odometer
 
-# Gathered from CAN
-with st.expander("Angular Data"):
-    if(angular_data == None):
-        st.error("Error: Angular Data Not Found")
-   # else:
+    # Gathered from CAN
+    with st.expander("Odometer Data"):
+        if(not "Odometer" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Odometer Data Not Found")
+        #else:
+            #TODO: implement Odometer data graphs
+
+    #endregion Odometer
+
+    #region Acceleration
+
+    # Gathered from CAN
+    with st.expander("Acceleration Data"):
+        if(not "Acceleration" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Acceleration Data Not Found")
+    #   else:
+        #TODO: implement Acceleration data graphs (mohammed-done)
+
+    #endregion Acceleration
+
+    #region Angular Data
+
+    # Gathered from CAN
+    with st.expander("Angular Data"):
+        if(not "Angular" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Angular Data Not Found")
+    # else:
         #TODO: implement Angular data graphs
 
-#endregion Angular Data
+    #endregion Angular Data
 
-#region Vibration Data
+    #region Vibration Data
 
-with st.expander("Vibration Data"):
-    if(vibration_data == None):
-        st.error("Error: Vibration Data Not Found")
-   # else:
+    with st.expander("Vibration Data"):
+        if(not "Vibration" in loaded_file_contents or not "Time" in loaded_file_contents):
+            st.error("Error: Vibration Data Not Found")
+    # else:
         #TODO: implement Vibration data graphs
 
-#endregion Vibration Data
+    #endregion Vibration Data
 
-
-#endregion Data Visualizer
+    #endregion Data Visualizer
 
 
