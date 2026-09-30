@@ -4,7 +4,7 @@ import numpy as np              #streamlit dependency
 import csv                      #
 import pathlib as pl            # pip install pathlib
 from Scripts import scr_line_chart, scr_calculate_heart_rate_zone
-
+import time
 
 #Page used to display live data
 
@@ -173,6 +173,38 @@ with st.expander("Speed Data"):
         #TODO: implement Speed data graphs
 
 #endregion Speed
+
+# region laptime
+
+with st.expander("Lap Timing"):
+    if "lap_start" not in st.session_state:
+        st.session_state.lap_start = time.time() # lap start value is equal to time when it starts 
+    current_lap = time.time() - st.session_state.lap_start # calculates current lap time 
+    if "best timing" not in st.session_state: 
+        st.session_state.best_lap = 151.328 # simulation replace later with current lap time compared to previous laps 
+        track_position = 4 # simulath csv data ion we could replace later with csv
+        col1, col2, col3 = st.columns(3) # 3 columns for current lap time, best lap time and the difference between them 
+        col1.metric(
+            label=" Current Lap",
+            value=f"{current_lap:.3f}s"
+        )# current lap time 
+        col2.metric(
+            label="Best Lap",
+            value=f"{st.session_state.best_lap:.3f}s"
+        )# best lap time
+
+        delta = current_lap - st.session_state.best_lap # calculate difference between current recorded lap time and best recorded laptime
+        col3.metric(
+            label="Delta",
+            value=f"{delta:+.3f}s"
+        )# display delta
+        st.button("Finish Lap") # later will be automated using CANmod.gps
+
+        if current_lap < st.session_state.best_lap: # if the current recorded lap is faster than the best recorded
+            st.session_state.best_lap = current_lap # update the best lap record 
+            st.session_state.lap_start = time.time() # reset time for a new lap
+            st.success("New lap started")
+#end region laptime
 
 #region Attitude
 
