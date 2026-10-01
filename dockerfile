@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["streamlit", "run", "Main.py", "--server.port", "5000", "8000"]
+CMD ["streamlit", "run", "Main.py", "--server.port", "5000"]
