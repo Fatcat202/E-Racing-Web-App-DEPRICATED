@@ -26,7 +26,7 @@ st.sidebar.markdown("Load Data")
 
 
 # File upload
-loaded_file = st.file_uploader("Pick a file", type = "csv")
+loaded_file = st.file_uploader("Pick a file for upload:", type = "csv")
 
 if(loaded_file is not None):
     # Read the contents of file loaded
