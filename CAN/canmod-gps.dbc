@@ -70,7 +70,6 @@ BO_ 6 GnssOdo: 8 Vector__XXX
 
 BO_ 7 GnssSpeed: 5 Vector__XXX
    SG_ Speed : 1|20@1+ (0.001,0) [0|1048.58] "m/s" Vector__XXX
-   SG_ Speed19 : 1|20@1+ (0.001,0) [0|1048.58] "m/s" Vector__XXX
    SG_ SpeedAccuracy : 21|19@1+ (0.001,0) [0|524.287] "m/s" Vector__XXX
    SG_ SpeedValid : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
