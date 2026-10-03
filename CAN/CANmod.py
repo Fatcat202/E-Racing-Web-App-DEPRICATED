@@ -1,11 +1,11 @@
 import os
-from cantools import ct 
+from cantools import database
 import pandas as pd
 import can
 import streamlit as st 
 
-# Open bus
-#Change the Channel number
+st.header("CAN data", divider=True) # page title
+st.sidebar.markdown("Digital Twin") # sidebar page title
 
 # locate the dbc file because it contains decoding instructions 
 dbc_path = os.path.join("dbc", "canmod-gps.dbc")
@@ -14,13 +14,13 @@ dbc_path = os.path.join("dbc", "canmod-gps.dbc")
 if not os.path.exists(dbc_path): # does file exist in the location
     raise FileNotFoundError(f"DBC file not found: {dbc_path}") # if doesnt exist say doesnt exist here
 
-db = ct.load_file(dbc_path, strict=False) # dbc file is a dictionary for raw CAN data, this uses cantools to read the dbc and know how to decode
+db = database.load_file(dbc_path, strict=False) # dbc file is a dictionary for raw CAN data, this uses cantools to read the dbc and know how to decode
 rows = [] # starts a list to store decoded CAN frames
 
 
 class CANdecoder: # class for decoding 
     def __init__(self, dbc_file): # automatically running method for decoding object
-        self.db = ct.load_file(dbc_file, strict=False) # stores dbc in object for method to run automatically
+        self.db = database.load_file(dbc_file, strict=False) # stores dbc in object for method to run automatically
     def decode(self, msg): # method for receiving raw CAN data 
         try:
             db_msg = self.db.get_message_by_frame_id(msg.arbitration_id) # msg.arbitration_id is for matching CAN frame id to dbc id to interpret it 
@@ -32,8 +32,8 @@ class CANdecoder: # class for decoding
         except Exception: # what if it cant be decoded
             return None # skip and continue 
 
-        result["t"] = msg.timestamp
-        result["message_name"] = db_msg.name
+        result["t"] = msg.timestamp # result contains decoded data, this line adds timing to it
+        result["message_name"] = db_msg.name # this line adds decoded message name as a name in result
         return result, db_msg
 
     # returns the data frame
@@ -71,9 +71,12 @@ try:
 
                 # Save decoded data to CSV as it arrives
                 df = pd.DataFrame(rows)
-                df.to_csv("CANmod_gps_data.csv",index=False,encoding='utf-8')
-                st.header("CAN data", divider=True) # page title
-                st.sidebar.markdown("Digital Twin") # sidebar page title
+                os.makedirs("Trial_Data", exist_ok=True)
+                df.to_csv(
+                    os.path.join("Trial_Data", "canmod_gps_data.csv"),
+                    index=False,
+                    encoding="utf-8",
+                )
 
                 # Prints data frames
                 print(df.tail(1))
