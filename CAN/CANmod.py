@@ -8,7 +8,7 @@ st.header("CAN data", divider=True) # page title
 st.sidebar.markdown("Digital Twin") # sidebar page title
 
 # locate the dbc file for decoding instructions 
-dbc_path = os.path.join("dbc", "canmod-gps.dbc")
+dbc_path = os.path.join("CAN", "canmod-gps.dbc")
 
 # checking for dbc file in dbc_path
 if not os.path.exists(dbc_path): 
