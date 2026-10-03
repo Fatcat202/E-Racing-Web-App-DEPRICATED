@@ -1,45 +1,49 @@
-import os
-from cantools import database
-import pandas as pd
-import can
-import streamlit as st 
+import os # pip install os
+from cantools import database # pip install cantools
+import pandas as pd 
+import can # pip install can
+import streamlit as st # pip install streamlit
 
 st.header("CAN data", divider=True) # page title
 st.sidebar.markdown("Digital Twin") # sidebar page title
 
-# locate the dbc file because it contains decoding instructions 
+# locate the dbc file for decoding instructions 
 dbc_path = os.path.join("dbc", "canmod-gps.dbc")
 
-# Some DBC files contain overlapping signal names like strict=False keeps the database usable for decoding.
-if not os.path.exists(dbc_path): # does file exist in the location
-    raise FileNotFoundError(f"DBC file not found: {dbc_path}") # if doesnt exist say doesnt exist here
+# checking for dbc file in dbc_path
+if not os.path.exists(dbc_path): 
+    raise FileNotFoundError(f"DBC file not found: {dbc_path}") 
 
-db = database.load_file(dbc_path, strict=False) # dbc file is a dictionary for raw CAN data, this uses cantools to read the dbc and know how to decode
+db = database.load_file(dbc_path, strict=False) # read the dbc instructions in dbc file
 rows = [] # starts a list to store decoded CAN frames
 
 
-class CANdecoder: # class for decoding 
-    def __init__(self, dbc_file): # automatically running method for decoding object
-        self.db = database.load_file(dbc_file, strict=False) # stores dbc in object for method to run automatically
+class CANdecoder:  
+    def __init__(self, dbc_file): # method for decoding object
+        self.db = database.load_file(dbc_file, strict=False) # stores dbc_file in decoding object
     def decode(self, msg): # method for receiving raw CAN data 
         try:
-            db_msg = self.db.get_message_by_frame_id(msg.arbitration_id) # msg.arbitration_id is for matching CAN frame id to dbc id to interpret it 
+            db_msg = self.db.get_message_by_frame_id(msg.arbitration_id) # matching CAN frame id to dbc id to interpret it 
         except KeyError: # what if the CAN frame has no matching dbc
             return None # skip that message without stopping
 
+# 
         try:
-            result = self.db.decode_message(db_msg.name, data=msg.data) # 
+            result = self.db.decode_message(db_msg.name, data=msg.data) # decode raw data and store in result
         except Exception: # what if it cant be decoded
             return None # skip and continue 
 
-        result["t"] = msg.timestamp # result contains decoded data, this line adds timing to it
-        result["message_name"] = db_msg.name # this line adds decoded message name as a name in result
+        result["t"] = msg.timestamp # timestamping the decoded data in result
+        result["message_name"] = db_msg.name # add decoded message name in result
         return result, db_msg
 
     # returns the data frame
     def data_frame(self, data):
         if data is None:
             return None
+
+
+# region optional filter 
 
         #result, db_msg = data
         #IMPORTANT_MESSAGES = [
@@ -58,27 +62,27 @@ class CANdecoder: # class for decoding
 
         #return pd.DataFrame([result])
 
+
+#end region optional filter
+
 # connect to the CANmod.gps device
 try:
-    with can.Bus(interface="csscan_serial", channel="COM13") as bus: # what port and serial will the device be connected to
+    with can.Bus(interface="csscan_serial", channel="COM13") as bus: # COM port and interface between CAN and PC
+
+
         # continuously listen for incoming frames (messages)
-        canmod_gps = CANdecoder(dbc_path) # decoding object
+        canmod_gps = CANdecoder(dbc_path) # decode file in dbc_path
         for msg in bus:
             decoded = canmod_gps.decode(msg)
             if decoded is not None:
                 result, db_msg = decoded
                 rows.append(result)
 
-                # Save decoded data to CSV as it arrives
+                # save decoded data and send it to Trial_Data as csv 
                 df = pd.DataFrame(rows)
-                os.makedirs("Trial_Data", exist_ok=True)
-                df.to_csv(
-                    os.path.join("Trial_Data", "canmod_gps_data.csv"),
-                    index=False,
-                    encoding="utf-8",
-                )
+                df.to_csv(os.path.join ("Trial_Data", "canmod_gps_data.csv"), index=False, encoding="utf-8")
 
-                # Prints data frames
+                # Prints data frame (df) from last row (tail)
                 print(df.tail(1))
 except Exception as exc:
     print(exc)
