@@ -81,7 +81,7 @@ if(file_chosen is not "Select Option"):
     # Declares selected file
     selected_file = file_chosen
     # Holds name of file chosen
-    selected_file_name = str(file_chosen)
+    selected_file_name = os.path.basename(file_chosen)
 
     # Keeps buttons rendered together in container
     with st.container(horizontal = True, wrap = False):
@@ -91,7 +91,11 @@ if(file_chosen is not "Select Option"):
         # Button allowing for data to be viewed
         if st.button(label = "View Data") and selected_file is not None:
             selected_file_contents = pd.read_csv(selected_file)
-        
+
+        if st.button("DELETE FILE"):
+            #popup for confirming deletion
+            popup('Trial_Data',selected_file_name)
+
 
 #endregion File Selection
 
@@ -118,38 +122,3 @@ if(selected_file_contents is not None):
     
 
     #endregion Data Visualizer
-
-
-#region delete data
-with st.container():
-    # Display title
-    st.header("Delete Data", divider=True)
-    # Display sidebar title
-    st.sidebar.markdown("Delete Data")
-
-    #Confirms the Trial data folder exist
-    with st.sidebar:
-        if folder_exist is True:
-            pass
-        else:
-            st.error("Folder NOT found")
-
-    if folder_exist:
-        def file_selector(folder_path='Trial_Data'):
-            filenames = os.listdir(folder_path)
-            #A drop down of all the files that exists in Trial_Data
-            selected_filename = st.selectbox('Select a file', ['-- Select a file --'] + filenames)
-            if selected_filename == '-- Select a file --':
-                return None
-            return selected_filename,folder_path
-        selection = file_selector()
-        if selection is not None:
-            filename, folder_path = selection
-            st.write(f'You selected `{filename}`')
-            #button for file deletion
-            if st.button("DELETE FILE"):
-                #popup for confirming deletion
-                popup(folder_path,filename)
-    else:
-        st.error('Folder not found')
-#endregion delete data
