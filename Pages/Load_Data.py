@@ -82,11 +82,15 @@ if(file_chosen is not "Select Option"):
     selected_file = file_chosen
     # Holds name of file chosen
     selected_file_name = os.path.basename(file_chosen)
-
+    df = pd.read_csv(str(file_chosen))
+    @st.cache_data
+    def convert_for_download(df):
+        return df.to_csv().encode("utf-8")
+    data = convert_for_download(df)
     # Keeps buttons rendered together in container
     with st.container(horizontal = True, wrap = False):
         # Download file to local drive
-        st.download_button(label = "Download File", data = selected_file[0])
+        st.download_button(label = "Download File", data = data,file_name=selected_file_name)
 
         # Button allowing for data to be viewed
         if st.button(label = "View Data") and selected_file is not None:
