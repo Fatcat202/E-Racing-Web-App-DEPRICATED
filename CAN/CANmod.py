@@ -3,16 +3,30 @@ from cantools import database # pip install cantools
 import pandas as pd 
 import can # pip install can
 import streamlit as st # pip install streamlit
+import serial.tools.list_ports # pip install pyserial (visit this for mre on pyserial (https://pyserial.readthedocs.io/en/latest/tools.html#module-serial.tools.list_ports)and(https://www.pyserial.com/docs/api-reference))
+# pip install python-can-csscan-serial for interface
 
 st.header("CAN data", divider=True) # page title
-st.sidebar.markdown("Digital Twin") # sidebar page title
+st.sidebar.markdown("CAN") # sidebar page title
 
-data_to_csv = False 
 
-with can.bus(port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"])) as bus:
+portl = serial.tools.list_ports.comports() # what COM ports does this device have 
+
+available_ports = [port.device for port in portl # a filter to keep only available ports (connected ports)
+    if "USB" in port.description # keep only available ports with description USB to keep only USB ports
+    ]
+COM_port = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ available_ports) # selection interface and available ports to choose from
+if not available_ports:
+    st.error ("No COM ports are currently connected") # if no ports are connected to computer display this 
+elif COM_port == "Select Option":
+    st.error ("please choose a COM port") # select a port from the available ports
+
+else:
+    st.success ("Port "+COM_port+" Selected") # if you select a port it will say port selected
+    
 
 # locate the dbc file for decoding instructions 
-    dbc_path = os.path.join("dbc", "canmod-gps.dbc")
+dbc_path = os.path.join("CAN", "canmod-gps.dbc")
 
 # checking for dbc file in dbc_path
 if not os.path.exists(dbc_path): 
@@ -71,7 +85,7 @@ class CANdecoder:
 
 # connect to the CANmod.gps device
 try:
-    with can.Bus(interface="csscan_serial", channel="COM13") as bus: # COM port and interface between CAN and PC
+    with can.Bus(interface="csscan_serial", channel=COM_port) as bus: # COM port and interface between CAN and PC
 
 
         # continuously listen for incoming frames (messages)
