@@ -7,8 +7,12 @@ import streamlit as st # pip install streamlit
 st.header("CAN data", divider=True) # page title
 st.sidebar.markdown("Digital Twin") # sidebar page title
 
+data_to_csv = False 
+
+with can.bus(port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"])) as bus:
+
 # locate the dbc file for decoding instructions 
-dbc_path = os.path.join("dbc", "canmod-gps.dbc")
+    dbc_path = os.path.join("dbc", "canmod-gps.dbc")
 
 # checking for dbc file in dbc_path
 if not os.path.exists(dbc_path): 
