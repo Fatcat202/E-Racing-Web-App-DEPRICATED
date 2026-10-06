@@ -4,22 +4,23 @@ import pandas as pd
 import can # pip install can
 import streamlit as st # pip install streamlit
 import serial.tools.list_ports
+from time import sleep
 
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
-data_to_csv = False 
+st.session_state.data_to_csv = False 
 
 st.header("CAN data", divider=True) # page title
 st.sidebar.markdown("Digital Twin") # sidebar page title
 port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
+    
 if(port_chosen is not "Select Option"):
-    print(str(data_to_csv)+"1")
+    print(str(st.session_state.data_to_csv)+"1")
     if st.button("Start reading data"):
-        data_to_csv = True 
+        st.session_state.data_to_csv = True 
     if st.button("stop reading data"):
-        data_to_csv = False
-    print(str(data_to_csv)+"2")
+        st.session_state.data_to_csv = False
 
 # locate the dbc file for decoding instructions 
 dbc_path = os.path.join("CAN", "canmod-gps.dbc")
@@ -56,28 +57,33 @@ class CANdecoder:
         if data is None:
             return None
 
+        result, db_msg = data
+
+        return pd.DataFrame([result])
+
 
 # connect to the CANmod.gps device
 try:
-    if(data_to_csv == True):
-        with can.Bus(interface="csscan_serial", channel=str(port_chosen)) as bus: # COM port and interface between CAN and PC
-
+    while (st.session_state.data_to_csv == True):
+        with can.Bus(interface="csscan_serial", channel="COM5") as bus:
             # continuously listen for incoming frames (messages)
-            
-            canmod_gps = CANdecoder(dbc_path) # decode file in dbc_path
-            print(str(data_to_csv)+"3")
+            canmod_gps = CANdecoder(dbc_path)
             for msg in bus:
-                
-                if(data_to_csv == False): break
-                print(str(data_to_csv)+"4")
+                if(st.session_state.data_to_csv == False):
+                            break
                 decoded = canmod_gps.decode(msg)
                 if decoded is not None:
                     result, db_msg = decoded
+                    for key in list(result):
+                        if "valid" in key.lower() or "accuracy" in key.lower():
+                            del result[key]
                     rows.append(result)
-                    # save decoded data and send it to Trial_Data as csv 
+                    # Save decoded data to CSV as it arrives
                     df = pd.DataFrame(rows)
-                    df.to_csv(os.path.join ("Trial_Data", "canmod_gps_data.csv"), index=False, encoding="utf-8")
-                    # Prints data frame (df) from last row (tail)
-                    #print(df.tail(1))
+                    df.to_csv("Trial_Data/CANmod_gps_data.csv",index=False,encoding='utf-8')
+                    # Prints data frames
+                    print(df.tail(1))
+        if(st.session_state.data_to_csv == False):
+            break
 except Exception as exc:
     print(exc)
