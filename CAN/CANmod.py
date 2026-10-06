@@ -4,8 +4,10 @@ import pandas as pd
 import can # pip install can
 import streamlit as st # pip install streamlit
 import serial.tools.list_ports
-from time import sleep
+from time import gmtime, strftime
 
+
+date_time=strftime("%Y-%m-%d %H:%M:%S", gmtime())
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
 st.session_state.data_to_csv = False 
@@ -80,7 +82,7 @@ try:
                     rows.append(result)
                     # Save decoded data to CSV as it arrives
                     df = pd.DataFrame(rows)
-                    df.to_csv("Trial_Data/CANmod_gps_data.csv",index=False,encoding='utf-8')
+                    df.to_csv("Trial_Data/CANmod_gps_data"+str(date_time)+".csv",index=False,encoding='utf-8')
                     # Prints data frames
                     print(df.tail(1))
         if(st.session_state.data_to_csv == False):
