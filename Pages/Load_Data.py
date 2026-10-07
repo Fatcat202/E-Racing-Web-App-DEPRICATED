@@ -36,9 +36,6 @@ st.sidebar.markdown("Load Data")
 #endregion Page Titles
 
 
-
-
-
 #Region File Upload
 
 # Keep elements wrapped in container
@@ -123,6 +120,37 @@ if(selected_file_contents is not None):
 
     #endregion Heart Rate
 
-    
+    with st.expander("Speed data"):
+        # Check if necessary data types exist
+        if(not "Speed" in selected_file_contents or not "t" in selected_file_contents):
+            st.error("Error: Speed Data Not Found")
+        else:
+
+            # Creating Heart Rate chart
+            Speed = st.line_chart(data=selected_file_contents, x="t", y="Speed")
+
+    with st.expander("odometery data"):
+        # Check if necessary data types exist
+        if(not "Speed" in selected_file_contents or not "t" in selected_file_contents):
+            st.error("Error: Speed Data Not Found")
+        else:
+
+            # Creating Heart Rate chart
+            Speed = st.line_chart(data=selected_file_contents, x="t", y="DistanceTrip")
+
+    with st.expander("map"):
+        selected_file_contents = selected_file_contents.rename(columns={'Latitude': 'lat', 'Longitude': 'lon'})
+        selected_file_contents = selected_file_contents[selected_file_contents['lat'].notna()]
+        data = selected_file_contents[["lat", "lon"]]
+        st.map(data)
+
+    with st.expander("odometery data"):
+        # Check if necessary data types exist
+        if(not "Speed" in selected_file_contents or not "t" in selected_file_contents):
+            st.error("Error: Speed Data Not Found")
+        else:
+
+            # Creating Heart Rate chart
+            Speed = st.line_chart(data=selected_file_contents, x="t", y="DistanceTrip")
 
     #endregion Data Visualizer

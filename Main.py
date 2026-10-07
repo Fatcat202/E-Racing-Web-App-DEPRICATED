@@ -2,7 +2,6 @@ import streamlit as st           #pip install streamlit
 import pandas as pd              #Streamlit dependency
 import numpy as np               #Streamlit dependency
 
-
 #Main file used to control web app
 
 
@@ -25,9 +24,10 @@ page_load_data = st.Page("Pages/Load_Data.py", title = "Load & Delete Data")
 page_driver_dash = st.Page("Pages/Driver_Dash.py", title = "Driver Dash")
 page_digital_twin = st.Page("Pages/Digital_Twin.py", title = "Digital Twin")
 page_anomaly_detection = st.Page("Pages/Anomaly_Detection.py", title = "Anomaly Detection")
+page_CANmod_gps = st.Page("CAN/CANmod.py", title = "CAN")
 
 # Create navigation list
-nav = st.navigation([page_welcome, page_live_data, page_load_data, page_driver_dash, page_digital_twin, page_anomaly_detection])
+nav = st.navigation([page_welcome, page_live_data, page_load_data, page_driver_dash, page_digital_twin, page_anomaly_detection, page_CANmod_gps])
 
 #Run Navigation object
 nav.run()
