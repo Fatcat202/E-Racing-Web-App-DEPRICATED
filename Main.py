@@ -20,7 +20,7 @@ st.logo(
 # Pages
 page_welcome = st.Page("Pages/Welcome.py", title = "Welcome", default = True)
 page_live_data = st.Page("Pages/Live_Data.py", title = "Live Data")
-page_load_data = st.Page("Pages/Load_Data.py", title = "Load & Delete Data")
+page_load_data = st.Page("Pages/Load_Data.py", title = "Load Data")
 page_driver_dash = st.Page("Pages/Driver_Dash.py", title = "Driver Dash")
 page_digital_twin = st.Page("Pages/Digital_Twin.py", title = "Digital Twin")
 page_anomaly_detection = st.Page("Pages/Anomaly_Detection.py", title = "Anomaly Detection")

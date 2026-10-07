@@ -27,7 +27,6 @@ data_file = None
 live_connection = False
 
 
-
 #endregion Variables
 
 
@@ -38,6 +37,8 @@ st.header("Live Data", divider=True)
 # Display sidebar title
 st.sidebar.markdown("Live Data")
 
+# Page Configuration
+st.set_page_config(layout="wide")
 
 # Widget showing if connection to live data is active
 with st.sidebar:
