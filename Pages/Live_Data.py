@@ -1,9 +1,11 @@
 import streamlit as st          #pip install streamlit
 import pandas as pd             #streamlit dependency
 import numpy as np              #streamlit dependency
-import csv                      #
+import csv                      #pip install csv
+import time                     #pip install time
 import pathlib as pl            # pip install pathlib
 from Scripts import scr_calculate_heart_rate_zone
+from streamlit_autorefresh import st_autorefresh # pip install streamlit_autorefresh
 
 
 #Page used to display live data
@@ -40,9 +42,12 @@ st.sidebar.markdown("Live Data")
 
 
 # Widget showing if connection to live data is active
+csv_file_content = pd.read_csv("Trial_Data/canmod-gps1.csv")
 with st.sidebar:
-    if live_connection is True:
+    if csv_file_content is not None:
         st.success("Live")
+    elif csv_file_content is None:
+        st.error("No Data Stream")
     else:
         st.error("No Data Stream")
 
@@ -95,5 +100,51 @@ if(live_connection == True):
 
 #endregion Data Visualizer
 
+# region CAN sensors
+#placeholder4 = st.empty()
+#placeholder3 = st.empty()
+#placeholder2 = st.empty()
+#placeholder1 = st.empty()
+#active_Speed_rate = csv_file_content["Speed"].iloc[-1]
+#active_DistanceTotal_rate = csv_file_content["DistanceTotal"].iloc[-1]
+#active_AngularRateX_rate = csv_file_content["AngularRateX"].iloc[-1]
+#active_AccelerationX_rate = csv_file_content["DistanceTotal"].iloc[-1]
+#st.write(active_Speed_rate)
+
+#Important_messages = {
+ #   "Speed": ("Speed"),
+  #  "IMU": ("AccelerationX", "AngularRateX"),
+   # "Odo": ("DistanceTotal")
+#}
+
+#st_autorefresh(interval=1000, key="Acceleration_refresh")
+#placeholder4.metric(
+#"🏎 Acceleration",
+#f"{active_AccelerationX_rate:.1f}"
+#)
+
+#st_autorefresh(interval=1000, key="AngularVelocity_refresh")
+#placeholder3.metric(
+#"🏎 Angular Velocity",
+#f"{active_AngularRateX_rate:.1f}"
+#)
+
+#st_autorefresh(interval=1000, key="Distance_refresh")
+#placeholder2.metric(
+#"🏎 Distance Travelled",
+#f"{active_DistanceTotal_rate:.1f}"
+#)
+
+#time.sleep(1)
+
+#st_autorefresh(interval=1000, key="speed_refresh")
+#placeholder1.metric(
+#"🏎 Current Speed",
+#f"{active_Speed_rate:.1f}"
+#)
+
+#time.sleep(1)
+
+# endregion CAN sensors
 
 

@@ -1,5 +1,6 @@
 import os # pip install os
 from cantools import database # pip install cantools
+import time # pip install time 
 import pandas as pd 
 import can # pip install can
 import streamlit as st # pip install streamlit
@@ -19,11 +20,20 @@ COM_port = st.selectbox("Select an uploaded file to view:", options = ["Select O
 if not available_ports:
     st.error ("No COM ports are currently connected") # if no ports are connected to computer display this 
 elif COM_port == "Select Option":
-    st.error ("please choose a COM port") # select a port from the available ports
-
+    st.success ("please choose a COM port") # select a port from the available ports
 else:
     st.success ("Port "+COM_port+" Selected") # if you select a port it will say port selected
-    
+
+csv_file_content = pd.read_csv("Trial_Data/canmod-gps1.csv")
+
+Important_messages = {
+    "Speed": ("Speed"),
+    "IMU": ("AccelerationX", "AngularRateX"),
+    "odometer": ("DistanceTotal"),
+    "time": ("Epoch"),
+    "position": ("Latitude", "Longitude"),
+    "information": ("Satellites")
+}
 
 # locate the dbc file for decoding instructions 
 dbc_path = os.path.join("CAN", "canmod-gps.dbc")
@@ -34,7 +44,6 @@ if not os.path.exists(dbc_path):
 
 db = database.load_file(dbc_path, strict=False) # read the dbc instructions in dbc file
 rows = [] # starts a list to store decoded CAN frames
-
 
 class CANdecoder:  
     def __init__(self, dbc_file): # method for decoding object
@@ -96,11 +105,27 @@ try:
                 result, db_msg = decoded
                 rows.append(result)
 
+                
+
                 # save decoded data and send it to Trial_Data as csv 
                 df = pd.DataFrame(rows)
                 df.to_csv(os.path.join ("Trial_Data", "canmod_gps_data.csv"), index=False, encoding="utf-8")
 
-                # Prints data frame (df) from last row (tail)
-                print(df.tail(1))
+                filtered_Important_messages = [
+                    "Speed",
+                    "AccelerationX",
+                    "AngularRateX",
+                    "DistanceTotal"
+             ]
+                filtered_df = df[filtered_Important_messages]
+                col1, col2, col3, col4 = st.columns(4)
+
+                col1.metric("Speed", filtered_df["Speed"].iloc[-1])
+                col2.metric("Acceleration", filtered_df["AccelerationX"].iloc[-1])
+                col3.metric("Angular Velocity", filtered_df["AngularRateX"].iloc[-1])
+                col4.metric("Distance Travelled", filtered_df["DistanceTotal"].iloc[-1])
+
+                # Prints data frame (filtered_df) from last row (tail)
+                #print(filtered_df.tail(1))
 except Exception as exc:
     print(exc)
