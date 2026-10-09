@@ -58,10 +58,18 @@ E-Racing Logo <br/>
 
 # REQUIRED SOFTWARE
 #### Python 3.14.7
-#### Streamlit
+#### Streamlit      - creates web user interface
+    pip install streamlit 
+#### Pathlib      - works with files and directories
     pip install pathlib
-#### Pathlib
-    pip install streamlit
+#### Python-can     - python library for communicating with CAN buses
+    pip install python-can
+#### cantools     - works with CAN databases
+    pip install cantools
+#### pyserial     - communicates with serial/COM ports
+    pip install pyserial
+#### python-can-csscan-serial     - provides python-can interface for CSSCAN serial hardware
+    pip install python-can-csscan-serial
 
 ## SCRIPTS:
 ### scr_calculate_heart_rate_zones(heart_rate, age) <br/>
@@ -72,7 +80,14 @@ E-Racing Logo <br/>
 - percent_HRmax (Float): Percentage of driver's heart rate relative to max.<br/>
 - intensity_zone (String): Heart Rate Zone the driver is in. <br/>
 #### Purpose: Calculate driver heart rate zones based on active heart rate and age.
-  
+
+### scr_delete_file_popup(folder_path, selected_filename) <br/>
+#### Parameters: <br/>
+- folder_path (String): Pass through path of folder with file located inside <br/>
+- selected_filename (String): Pass through name of file to be deleted <br/>
+#### Returns: <br/>
+- None <br/>
+#### Purpose: Creates a dialogue popup checking if user truly wants to delete selected file.
   
 
 
