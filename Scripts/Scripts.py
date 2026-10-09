@@ -5,7 +5,8 @@ import pathlib as pl            # pip install pathlib
 import os
 import math
 
-def acceleration(accelerationx,accelerationy,accelerationz):
+def scr_acceleration_calc(accelerationx,accelerationy,accelerationz):
+    # Calculate normalised acceleration by passing through x,y,z acceleration
     a = math.sqrt((accelerationx**2)+(accelerationy**2)+(accelerationz**2))
     return a
 

@@ -5,7 +5,8 @@ import csv                      #
 import pathlib as pl            # pip install pathlib
 import glob                     # Used for reading files in folder
 import os.path                  # Used to save CSV to directory in application
-from Scripts import scr_calculate_heart_rate_zone, scr_delete_file_popup
+from Scripts.Scripts import scr_calculate_heart_rate_zone, scr_delete_file_popup
+from Scripts.Cells import *     # Gather all cell scripts
 import os
 
 
@@ -95,79 +96,34 @@ with st.container():
 
 #region Data Visualizer
 
+# Check for valid file contents
 if(selected_file_contents is not None):
-
+    
+    # Create columns for data cells
+    # Cells listed in columns are in order of rows
     col1, col2, col3 = st.columns(spec=3, width="stretch")
-
 
     #region Column 1
     with col1:
 
-        #region Heart Rate
-        with st.container(border=True):
+        cell_speed(selected_file_contents)
 
-            st.header("Heart Rate Data", text_alignment="center")
-            # Check if necessary data types exist
-            if(not "Heart Rate" in selected_file_contents or not "Time" in selected_file_contents):
-                st.error("Error: Heart Rate Data Not Found")
-            else:
-
-                # Creating Heart Rate chart
-                HR_chart = st.line_chart(data=selected_file_contents, x="Time", y="Heart Rate")
-
-        #endregion Heart Rate
-
-        #region Odometry Data
-        with st.container(border=True):
-
-            st.header("Odometry Data", text_alignment="center")
-            # Check if necessary data types exist
-            if(not "DistanceTrip" in selected_file_contents or not "time" in selected_file_contents):
-                st.error("Error: Odometry Data Not Found")
-            else:
-
-                # Creating Heart Rate chart
-                odometry_chart = st.line_chart(data=selected_file_contents, x="time", y="DistanceTrip")
-        #endregion Odometry Data
+        cell_heart_rate(selected_file_contents)
 
     #endregion Column 1
 
     #region Column 2
-
     with col2:
 
-        #region Acceleration Data
-        with st.container(border=True):
-
-            st.header("Acceleration Data", text_alignment="center")
-            # Check if necessary data types exist
-            if(not "AccelerationX" in selected_file_contents or not "time" in selected_file_contents):
-                st.error("Error: Acceleration Data Not Found")
-            else:
-
-                # Creating Heart Rate chart
-                accel_chart = st.line_chart(data=selected_file_contents, x="time", y="AccelerationX")
-        #endregion Acceleration Data
+        cell_acceleration(selected_file_contents)
 
     #endregion Column 2
 
     #region Column 3
-
     with col3:
 
-        #region Speed Data
-        with st.container(border=True):
-            st.header("Speed Data", text_alignment="center")
-            # Check if necessary data types exist
-            if(not "Speed" in selected_file_contents or not "time" in selected_file_contents):
-                st.error("Error: Speed Data Not Found")
-            else:
-
-                # Creating Speed chart
-                Speed = st.line_chart(data=selected_file_contents, x="time", y="Speed")
-        #endregion Speed Data
+        cell_odometry(selected_file_contents)
 
     #endregion Column 3
 
-
-    #endregion Data Visualizer
+#endregion Data Visualizer
