@@ -97,46 +97,77 @@ with st.container():
 
 if(selected_file_contents is not None):
 
-    #region Heart Rate
-
-    # Set to true for testing
-    with st.expander("Heart Rate Data"):
-        # Check if necessary data types exist
-        if(not "Heart Rate" in selected_file_contents or not "Time" in selected_file_contents):
-            st.error("Error: Heart Rate Data Not Found")
-        else:
-
-            # Creating Heart Rate chart
-            HR_chart = st.line_chart(data=selected_file_contents, x="Time", y="Heart Rate")
+    col1, col2, col3 = st.columns(spec=3, width="stretch")
 
 
-    #endregion Heart Rate
+    #region Column 1
+    with col1:
 
-    with st.expander("Speed data"):
-        # Check if necessary data types exist
-        if(not "Speed" in selected_file_contents or not "t" in selected_file_contents):
-            st.error("Error: Speed Data Not Found")
-        else:
+        #region Heart Rate
+        with st.container(border=True):
 
-            # Creating Speed chart
-            Speed = st.line_chart(data=selected_file_contents, x="time", y="Speed")
+            st.header("Heart Rate Data", text_alignment="center")
+            # Check if necessary data types exist
+            if(not "Heart Rate" in selected_file_contents or not "Time" in selected_file_contents):
+                st.error("Error: Heart Rate Data Not Found")
+            else:
 
-    with st.expander("Odometry Data"):
-        # Check if necessary data types exist
-        if(not "Distance" in selected_file_contents or not "time" in selected_file_contents):
-            st.error("Error: Odometry Data Not Found")
-        else:
+                # Creating Heart Rate chart
+                HR_chart = st.line_chart(data=selected_file_contents, x="Time", y="Heart Rate")
 
-            # Creating Heart Rate chart
-            Speed = st.line_chart(data=selected_file_contents, x="time", y="Distance")
+        #endregion Heart Rate
 
-    with st.expander("Acceleration Data"):
-        # Check if necessary data types exist
-        if(not "Acceleration" in selected_file_contents or not "time" in selected_file_contents):
-            st.error("Error: Acceleration Data Not Found")
-        else:
+        #region Odometry Data
+        with st.container(border=True):
 
-            # Creating Heart Rate chart
-            Speed = st.line_chart(data=selected_file_contents, x="time", y="Acceleration")
+            st.header("Odometry Data", text_alignment="center")
+            # Check if necessary data types exist
+            if(not "DistanceTrip" in selected_file_contents or not "time" in selected_file_contents):
+                st.error("Error: Odometry Data Not Found")
+            else:
+
+                # Creating Heart Rate chart
+                odometry_chart = st.line_chart(data=selected_file_contents, x="time", y="DistanceTrip")
+        #endregion Odometry Data
+
+    #endregion Column 1
+
+    #region Column 2
+
+    with col2:
+
+        #region Acceleration Data
+        with st.container(border=True):
+
+            st.header("Acceleration Data", text_alignment="center")
+            # Check if necessary data types exist
+            if(not "AccelerationX" in selected_file_contents or not "time" in selected_file_contents):
+                st.error("Error: Acceleration Data Not Found")
+            else:
+
+                # Creating Heart Rate chart
+                accel_chart = st.line_chart(data=selected_file_contents, x="time", y="AccelerationX")
+        #endregion Acceleration Data
+
+    #endregion Column 2
+
+    #region Column 3
+
+    with col3:
+
+        #region Speed Data
+        with st.container(border=True):
+            st.header("Speed Data", text_alignment="center")
+            # Check if necessary data types exist
+            if(not "Speed" in selected_file_contents or not "time" in selected_file_contents):
+                st.error("Error: Speed Data Not Found")
+            else:
+
+                # Creating Speed chart
+                Speed = st.line_chart(data=selected_file_contents, x="time", y="Speed")
+        #endregion Speed Data
+
+    #endregion Column 3
+
 
     #endregion Data Visualizer
