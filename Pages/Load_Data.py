@@ -119,24 +119,24 @@ if(selected_file_contents is not None):
         else:
 
             # Creating Speed chart
-            Speed = st.line_chart(data=selected_file_contents, x="t", y="Speed")
+            Speed = st.line_chart(data=selected_file_contents, x="time", y="Speed")
 
     with st.expander("Odometry Data"):
         # Check if necessary data types exist
-        if(not "DistanceTrip" in selected_file_contents or not "t" in selected_file_contents):
+        if(not "Distance" in selected_file_contents or not "time" in selected_file_contents):
             st.error("Error: Odometry Data Not Found")
         else:
 
             # Creating Heart Rate chart
-            Speed = st.line_chart(data=selected_file_contents, x="t", y="DistanceTrip")
+            Speed = st.line_chart(data=selected_file_contents, x="time", y="Distance")
 
     with st.expander("Acceleration Data"):
         # Check if necessary data types exist
-        if(not "AccelerationX" in selected_file_contents or not "t" in selected_file_contents):
+        if(not "Acceleration" in selected_file_contents or not "time" in selected_file_contents):
             st.error("Error: Acceleration Data Not Found")
         else:
 
             # Creating Heart Rate chart
-            Speed = st.line_chart(data=selected_file_contents, x="t", y="AccelerationX")
+            Speed = st.line_chart(data=selected_file_contents, x="time", y="Acceleration")
 
     #endregion Data Visualizer

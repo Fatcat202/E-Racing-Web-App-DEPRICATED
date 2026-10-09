@@ -3,6 +3,11 @@ import pandas as pd             # streamlit dependency
 import numpy as np              # streamlit dependency
 import pathlib as pl            # pip install pathlib
 import os
+import math
+
+def acceleration(accelerationx,accelerationy,accelerationz):
+    a = math.sqrt((accelerationx**2)+(accelerationy**2)+(accelerationz**2))
+    return a
 
 # Script used to calculate driver heart rate zone
 def scr_calculate_heart_rate_zone(heart_rate=0, age=0):
