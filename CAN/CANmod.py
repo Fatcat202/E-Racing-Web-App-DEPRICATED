@@ -74,6 +74,7 @@ try:
             for msg in bus:
                 if(st.session_state.data_to_csv == False):
                             break
+                
                 decoded = canmod_gps.decode(msg)
                 if decoded is not None:
                     result, db_msg = decoded
@@ -83,6 +84,7 @@ try:
                     rows.append(result)
                     # Save decoded data to CSV as it arrives
                     df = pd.DataFrame(rows)
+                    df['time'] = df['t'] - df.loc[0,'t']
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
                     # Prints data frames
