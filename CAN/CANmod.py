@@ -6,6 +6,7 @@ import streamlit as st # pip install streamlit
 import serial.tools.list_ports
 from time import gmtime, strftime
 from datetime import datetime
+from Scripts import *
 
 
 date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -84,7 +85,14 @@ try:
                     rows.append(result)
                     # Save decoded data to CSV as it arrives
                     df = pd.DataFrame(rows)
+                    dt = 0.1
                     df['time'] = df['t'] - df.loc[0,'t']
+                    df['AccelerationX'] = df['AccelerationX'] - df.loc[0,'AccelerationX']
+                    df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
+                    df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
+                    df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
+                    df['Speed'] = df['Acceleration']*dt
+                    df['Distance'] = df['Speed']*dt
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
                     # Prints data frames
