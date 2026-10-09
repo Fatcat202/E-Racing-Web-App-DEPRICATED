@@ -15,7 +15,7 @@ def cell_heart_rate(file_contents, live_connection=False):
             st.error("Error: Heart Rate Data Not Found")
         else:
             # Creating Heart Rate chart
-            HR_chart = st.line_chart(data=file_contents, x="Time", y="Heart Rate")
+            HR_chart = st.line_chart(data=file_contents, x="Time", y="Heart Rate" , x_label="Time (S)")
 
             if(live_connection == True):
                 # Numerical input for driver age
@@ -38,10 +38,7 @@ def cell_heart_rate(file_contents, live_connection=False):
                 col2.metric(label = "HRmax%", value = percent_HRmax, border = True)
                 col3.metric(label = "HR Zone", value = zone_HR, border = True)
 
-
-
 #endregion Heart Rate
-
 
 #region Odometry Data
 def cell_odometry(file_contents):
@@ -50,12 +47,11 @@ def cell_odometry(file_contents):
 
         st.header("Odometry Data", text_alignment="center")
         # Check if necessary data types exist
-        if(not "DistanceTrip" in file_contents or not "time" in file_contents):
+        if(not "Distance" in file_contents or not "time" in file_contents):
             st.error("Error: Odometry Data Not Found")
         else:
-
-            # Creating Heart Rate chart
-            odometry_chart = st.line_chart(data=file_contents, x="time", y="DistanceTrip")
+            # Creating odometry chart
+            odometry_chart = st.line_chart(data=file_contents, x="time", y="Distance", x_label="Time (s)")
 #endregion Odometry Data
 
 #region Acceleration Data
@@ -65,12 +61,11 @@ def cell_acceleration(file_contents):
 
         st.header("Acceleration Data", text_alignment="center")
         # Check if necessary data types exist
-        if(not "AccelerationX" in file_contents or not "time" in file_contents):
+        if(not "Acceleration" in file_contents or not "time" in file_contents):
             st.error("Error: Acceleration Data Not Found")
         else:
-
-            # Creating Heart Rate chart
-            accel_chart = st.line_chart(data=file_contents, x="time", y="AccelerationX")
+            # Creating acceleration chart
+            accel_chart = st.line_chart(data=file_contents, x="time", y="Acceleration", x_label="Time (s)")
 #endregion Acceleration Data
 
 #region Speed Data
@@ -81,7 +76,7 @@ def cell_speed(file_contents):
         if(not "Speed" in file_contents or not "time" in file_contents):
             st.error("Error: Speed Data Not Found")
         else:
-
-            # Creating Speed chart
-            Speed = st.line_chart(data=file_contents, x="time", y="Speed")
+            # Creating speed chart
+            speed_graph = st.line_chart(data=file_contents, x="time", y="Speed", x_label="Time (s)", y_label="Speed (m/s)")
 #endregion Speed Data
+
