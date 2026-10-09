@@ -122,12 +122,12 @@ if(selected_file_contents is not None):
 
             st.header("Odometry Data", text_alignment="center")
             # Check if necessary data types exist
-            if(not "DistanceTrip" in selected_file_contents or not "t" in selected_file_contents):
+            if(not "DistanceTrip" in selected_file_contents or not "time" in selected_file_contents):
                 st.error("Error: Odometry Data Not Found")
             else:
 
                 # Creating Heart Rate chart
-                odometry_chart = st.line_chart(data=selected_file_contents, x="t", y="DistanceTrip")
+                odometry_chart = st.line_chart(data=selected_file_contents, x="time", y="DistanceTrip")
         #endregion Odometry Data
 
     #endregion Column 1
@@ -141,12 +141,12 @@ if(selected_file_contents is not None):
 
             st.header("Acceleration Data", text_alignment="center")
             # Check if necessary data types exist
-            if(not "AccelerationX" in selected_file_contents or not "t" in selected_file_contents):
+            if(not "AccelerationX" in selected_file_contents or not "time" in selected_file_contents):
                 st.error("Error: Acceleration Data Not Found")
             else:
 
                 # Creating Heart Rate chart
-                accel_chart = st.line_chart(data=selected_file_contents, x="t", y="AccelerationX")
+                accel_chart = st.line_chart(data=selected_file_contents, x="time", y="AccelerationX")
         #endregion Acceleration Data
 
     #endregion Column 2
@@ -159,12 +159,12 @@ if(selected_file_contents is not None):
         with st.container(border=True):
             st.header("Speed Data", text_alignment="center")
             # Check if necessary data types exist
-            if(not "Speed" in selected_file_contents or not "t" in selected_file_contents):
+            if(not "Speed" in selected_file_contents or not "time" in selected_file_contents):
                 st.error("Error: Speed Data Not Found")
             else:
 
                 # Creating Speed chart
-                Speed = st.line_chart(data=selected_file_contents, x="t", y="Speed")
+                Speed = st.line_chart(data=selected_file_contents, x="time", y="Speed")
         #endregion Speed Data
 
     #endregion Column 3
