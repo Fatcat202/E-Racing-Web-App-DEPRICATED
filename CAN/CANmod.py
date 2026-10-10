@@ -24,10 +24,8 @@ elif COM_port == "Select Option":
 else:
     st.success ("Port "+COM_port+" Selected") # if you select a port it will say port selected
 
-csv_file_content = pd.read_csv("Trial_Data/canmod-gps1.csv")
-
 Important_messages = {
-    "Speed": ("Speed"),
+    "speed": ("speed"),
     "IMU": ("AccelerationX", "AngularRateX"),
     "odometer": ("DistanceTotal"),
     "time": ("Epoch"),
@@ -70,6 +68,7 @@ class CANdecoder:
             return None
 
 
+
 # region optional filter 
 
         #result, db_msg = data
@@ -94,38 +93,49 @@ class CANdecoder:
 
 # connect to the CANmod.gps device
 try:
-    with can.Bus(interface="csscan_serial", channel=COM_port) as bus: # COM port and interface between CAN and PC
-
+    placeholderdf = st.empty() # creates a space on the page that can be updated with new data
+    with can.Bus(interface="csscan_serial", channel=COM_port) as bus:  # COM port and interface between CAN and PC
+        refresh_interval = 1  # how many seconds to wait between table updates
+        last_refresh = time.monotonic() # records the time of the last table update
 
         # continuously listen for incoming frames (messages)
-        canmod_gps = CANdecoder(dbc_path) # decode file in dbc_path
+        canmod_gps = CANdecoder(dbc_path)  # decode file in dbc_path
         for msg in bus:
             decoded = canmod_gps.decode(msg)
             if decoded is not None:
                 result, db_msg = decoded
                 rows.append(result)
 
-                
+            now = time.monotonic()
+            if now - last_refresh >= refresh_interval:
+                if rows:
+                    df = pd.DataFrame(rows[-1000:]) # keeps the table to the latest 1000 decoded messages
+                    placeholderdf.dataframe(df, use_container_width=True) # updates the table in the placeholder
+                last_refresh = now # starts timing until the next table update
 
-                # save decoded data and send it to Trial_Data as csv 
-                df = pd.DataFrame(rows)
-                df.to_csv(os.path.join ("Trial_Data", "canmod_gps_data.csv"), index=False, encoding="utf-8")
+    if rows: # checks that at least one message was decoded before saving
+        df = pd.DataFrame(rows[-1000:]) # prepares the latest 1000 decoded messages for saving
+        df.to_csv(os.path.join("Trial_Data", "canmod_gps_data.csv"), index=False, encoding="utf-8") # creates the CSV if it does not exist, then saves the data after the listener stops
+        #filtered_Important_messages = {
+        #   "speed",
+        #   "AccelerationX",
+        #   "AngularRateX",
+        #   "DistanceTotal"
+        #}
 
-                filtered_Important_messages = [
-                    "Speed",
-                    "AccelerationX",
-                    "AngularRateX",
-                    "DistanceTotal"
-             ]
-                filtered_df = df[filtered_Important_messages]
-                col1, col2, col3, col4 = st.columns(4)
+    # filtered_df = df[filtered_Important_messages]
+    # col1, col2, col3, col4 = st.columns(4)
 
-                col1.metric("Speed", filtered_df["Speed"].iloc[-1])
-                col2.metric("Acceleration", filtered_df["AccelerationX"].iloc[-1])
-                col3.metric("Angular Velocity", filtered_df["AngularRateX"].iloc[-1])
-                col4.metric("Distance Travelled", filtered_df["DistanceTotal"].iloc[-1])
+    # col1.metric("speed", filtered_df["speed"])#.iloc[-10]
+    # col2.metric("Acceleration", filtered_df["AccelerationX"])#.iloc[-10]
+    # col3.metric("Angular Velocity", filtered_df["AngularRateX"])#.iloc[-10]
+    # col4.metric("Distance Travelled", filtered_df["DistanceTotal"])#.iloc[-10]
 
-                # Prints data frame (filtered_df) from last row (tail)
-                #print(filtered_df.tail(1))
+        #Prints data frame (filtered_df) from last row (tail)
+        print(df.tail(1))
+        #placeholder1=st.empty()
+        #placeholder1.metric(col1)
+        #st.write(col1)
+        #f"{col1:.1f}"
 except Exception as exc:
     print(exc)

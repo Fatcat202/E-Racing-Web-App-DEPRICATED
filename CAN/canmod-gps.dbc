@@ -39,7 +39,7 @@ BO_ 1 Status: 1 Vector__XXX
  SG_ Satellites : 3|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 2 Time: 6 Vector__XXX
- SG_ Epoch : 8|40@1+ (1,0) [0|0] "sec" Vector__XXX
+ SG_ Epoch : 8|40@1+ (0,0) [0|0] "sec" Vector__XXX
 
 BO_ 3 Position: 8 Vector__XXX
  SG_ Latitude : 1|28@1+ (1e-06,-90) [-90|90] "deg" Vector__XXX
@@ -55,8 +55,8 @@ BO_ 7 Speed: 5 Vector__XXX
 
 
 BO_ 9 Imu: 8 Vector__XXX
- SG_ AccelerationX : 1|10@1+ (0.125,-64) [-64|63.875] "m/s^2" Vector__XXX
- SG_ AngularRateX : 31|11@1+ (0.25,-256) [-256|255.75] "deg/s" Vector__XXX
+ SG_ AccelerationX : 1|10@1+ (0.125,-64) [-63|63.875] "m/s^2" Vector__XXX
+ SG_ AngularRateX : 31|11@1+ (0.25,-256) [-255.5|255.75] "deg/s" Vector__XXX
 
 BO_ 0 Accelaration: 8 Vector__XXX
  SG_ Accelaration : 0|8@1+ (0,0) [0|0] "" Vector__XXX

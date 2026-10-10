@@ -5,7 +5,7 @@ import csv                      #pip install csv
 import time                     #pip install time
 import pathlib as pl            # pip install pathlib
 from Scripts import scr_calculate_heart_rate_zone
-from streamlit_autorefresh import st_autorefresh # pip install streamlit_autorefresh
+#from streamlit_autorefresh import st_autorefresh # pip install streamlit_autorefresh
 
 
 #Page used to display live data
@@ -42,7 +42,7 @@ st.sidebar.markdown("Live Data")
 
 
 # Widget showing if connection to live data is active
-csv_file_content = pd.read_csv("Trial_Data/canmod-gps1.csv")
+csv_file_content = pd.read_csv("Trial_Data/canmod_gps_data.csv")
 with st.sidebar:
     if csv_file_content is not None:
         st.success("Live")
@@ -105,10 +105,10 @@ if(live_connection == True):
 #placeholder3 = st.empty()
 #placeholder2 = st.empty()
 #placeholder1 = st.empty()
-#active_Speed_rate = csv_file_content["Speed"].iloc[-1]
-#active_DistanceTotal_rate = csv_file_content["DistanceTotal"].iloc[-1]
-#active_AngularRateX_rate = csv_file_content["AngularRateX"].iloc[-1]
-#active_AccelerationX_rate = csv_file_content["DistanceTotal"].iloc[-1]
+#active_Speed_rate = csv_file_content["AccelerationX"]#.iloc[-1]
+#active_DistanceTotal_rate = csv_file_content["AngularRateX"]#.iloc[-1]
+#active_AngularRateX_rate = csv_file_content["t"]#.iloc[-1]
+#active_AccelerationX_rate = csv_file_content["message_name"]#.iloc[-1]
 #st.write(active_Speed_rate)
 
 #Important_messages = {
@@ -137,7 +137,7 @@ if(live_connection == True):
 
 #time.sleep(1)
 
-#st_autorefresh(interval=1000, key="speed_refresh")
+#st_autorefresh(interval=1000, key="Speed_refresh")
 #placeholder1.metric(
 #"🏎 Current Speed",
 #f"{active_Speed_rate:.1f}"
