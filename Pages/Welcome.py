@@ -48,16 +48,16 @@ def scr_sensor_implemented(name = "", implemented = False):
         st.markdown(name + " &mdash; " + _not_implemented)
     
 # Sensors
+scr_sensor_implemented("Acceleration", True)
+scr_sensor_implemented("Speed", False)
+scr_sensor_implemented("Odometer", False)
 scr_sensor_implemented("Heart Rate", False)
 scr_sensor_implemented("Suspension", False)
 scr_sensor_implemented("Motor", False)
 scr_sensor_implemented("HV Battery", False)
 scr_sensor_implemented("LV Battery", False)
 scr_sensor_implemented("Aero", False)
-scr_sensor_implemented("Speed", False)
 scr_sensor_implemented("Attitude", False)
-scr_sensor_implemented("Odometer", False)
-scr_sensor_implemented("Acceleration", False)
 scr_sensor_implemented("Angular", False)
 scr_sensor_implemented("Vibration", False)
 

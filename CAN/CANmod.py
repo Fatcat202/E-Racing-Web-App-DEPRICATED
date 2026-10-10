@@ -6,7 +6,7 @@ import streamlit as st # pip install streamlit
 import serial.tools.list_ports
 from time import gmtime, strftime
 from datetime import datetime
-from Scripts import *
+from Scripts.Scripts import *
 
 
 date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
