@@ -41,8 +41,6 @@ To launch the software, use `streamlit run Main.py` in your IDE's integrated ter
   (Your code here) <br/>
 #endregion (Title of region)
 - Files/Folders are to be named in the style listed: (Scripts.py, Live_Data.py, Trial_Data, Images)
-- Scripts are to start with the prefix scr_
-- Cells are to start with the prefix cell_
 - Libraries used should be displayed at the top of files in the format: `#import streamlit as py      #pip install streamlit`
 - Tabs, not spaces.
 
@@ -54,7 +52,6 @@ Pages <br/>
 Navigation <br/>
 E-Racing Logo <br/>
 - Scripts.py holds frequently used scripts.
-- Cells.py holds data cells, preconstructed containers holding graphs and other methods of displaying data.
 - The folder Trial_Data contains saved test run data as CSV files.
 - Loading data for analysis functions as follows: Upload Data --> Select File --> View Data
 
