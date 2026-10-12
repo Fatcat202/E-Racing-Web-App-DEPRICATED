@@ -4,27 +4,22 @@ import pandas as pd
 import can # pip install can
 import streamlit as st # pip install streamlit
 import serial.tools.list_ports
-from time import gmtime, strftime
-from datetime import datetime
-from Scripts.Scripts import *
 
-
-date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
-st.session_state.data_to_csv = False 
+data_to_csv = False 
 
 st.header("CAN data", divider=True) # page title
 st.sidebar.markdown("Digital Twin") # sidebar page title
 port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
-    
 if(port_chosen is not "Select Option"):
-    print(str(st.session_state.data_to_csv)+"1")
+    print(str(data_to_csv)+"1")
     if st.button("Start reading data"):
-        st.session_state.data_to_csv = True 
+        data_to_csv = True 
     if st.button("stop reading data"):
-        st.session_state.data_to_csv = False
+        data_to_csv = False
+    print(str(data_to_csv)+"2")
 
 # locate the dbc file for decoding instructions 
 dbc_path = os.path.join("CAN", "canmod-gps.dbc")
@@ -53,7 +48,7 @@ class CANdecoder:
             return None # skip and continue 
 
         result["t"] = msg.timestamp # timestamping the decoded data in result
-        result["message_name"] = db_msg.name # add decoded message name in result
+        result["ls /dev/ttyACM* or ls /dev/ttyUSB*message_name"] = db_msg.name # add decoded message name in result
         return result, db_msg
 
     # returns the data frame
@@ -61,43 +56,30 @@ class CANdecoder:
         if data is None:
             return None
 
-        result, db_msg = data
-
-        return pd.DataFrame([result])
-
 
 # connect to the CANmod.gps device
 try:
-    while (st.session_state.data_to_csv == True):
-        with can.Bus(interface="csscan_serial", channel="COM5") as bus:
+    if(data_to_csv == True):
+        with can.Bus(interface="csscan_serial", channel=str(port_chosen)) as bus: # COM port and interface between CAN and PC
+
             # continuously listen for incoming frames (messages)
-            canmod_gps = CANdecoder(dbc_path)
+            
+            canmod_gps = CANdecoder(dbc_path) # decode file in dbc_path
+            print(str(data_to_csv)+"3")
             for msg in bus:
-                if(st.session_state.data_to_csv == False):
-                            break
                 
+                if(data_to_csv == False): break
+                print(str(data_to_csv)+"4")
                 decoded = canmod_gps.decode(msg)
                 if decoded is not None:
                     result, db_msg = decoded
-                    for key in list(result):
-                        if "valid" in key.lower() or "accuracy" in key.lower():
-                            del result[key]
                     rows.append(result)
-                    # Save decoded data to CSV as it arrives
+                    # save decoded data and send it to Trial_Data as csv 
                     df = pd.DataFrame(rows)
-                    dt = 0.1
-                    df['time'] = df['t'] - df.loc[0,'t']
-                    df['AccelerationX'] = df['AccelerationX'] - df.loc[0,'AccelerationX']
-                    df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
-                    df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
-                    df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
-                    df['Speed'] = df['Acceleration']*dt
-                    df['Distance'] = df['Speed']*dt
-                    name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
-                    df.to_csv(str(name),index=False,encoding='utf-8')
-                    # Prints data frames
-                    print(df.tail(1))
-        if(st.session_state.data_to_csv == False):
-            break
+                    df.to_csv(os.path.join ("Trial_Data", "canmod_gps_data.csv"), index=False, encoding="utf-8")
+                    # Prints data frame (df) from last row (tail)
+                    #print(df.tail(1))
+    else:
+        bus.close()
 except Exception as exc:
     print(exc)
