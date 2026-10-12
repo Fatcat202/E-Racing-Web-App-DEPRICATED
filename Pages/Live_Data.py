@@ -1,9 +1,7 @@
 import streamlit as st          #pip install streamlit
 import pandas as pd             #streamlit dependency
 import numpy as np              #streamlit dependency
-import csv                      #
 import pathlib as pl            # pip install pathlib
-from Scripts.Scripts import scr_calculate_heart_rate_zone
 from Scripts.Cells import *
 import os
 from cantools import database   # pip install cantools
@@ -18,22 +16,29 @@ from datetime import datetime
 #region Variables
 
 # Declares if a live connection to data is established, default false
-live_connection = False
+if "live_connection" not in st.session_state:
+    st.session_state.live_connection = False
 
 # Holds contents of file. Filled in CAN Input
-file_contents = None
+if "file_contents" not in st.session_state:
+    st.session_state.file_contents = None
 
 #endregion Variables
 
+heart = st.empty()
+speed = st.empty()
+acceleration = st.empty()
+odometry = st.empty()
+
 #region Page Titles
+
+# Page Configuration
+st.set_page_config(layout="wide")
 
 # Display title
 st.header("Live Data", divider=True)
 # Display sidebar title
 st.sidebar.markdown("Live Data")
-
-# Page Configuration
-st.set_page_config(layout="wide")
 
 #endregion Page Titles
 
@@ -45,18 +50,21 @@ date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 # Locate all ports
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
-st.session_state.data_to_csv = False 
+if "data_to_csv" not in st.session_state:
+    st.session_state.data_to_csv = False
 
 # Allow user to select port
 port_chosen = st.selectbox("Select a Port Connection to CAN:", options = ["Select Option"]+ports)
 
 # Allow user to start and stop data connection
-if(port_chosen is not "Select Option"):
+if port_chosen != "Select Option":
     print(str(st.session_state.data_to_csv)+"1")
     if st.button("Start reading data"):
-        st.session_state.data_to_csv = True 
+        st.session_state.data_to_csv = True
+        st.session_state.live_connection = True 
     if st.button("stop reading data"):
         st.session_state.data_to_csv = False
+        st.session_state.live_connection = False
 
 # locate the dbc file for decoding instructions 
 dbc_path = os.path.join("CAN", "canmod-gps.dbc")
@@ -122,19 +130,36 @@ try:
                     df['Distance'] = (df['Speed']*0.1).cumsum()
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
+                    st.session_state.live_connection = True
+                    # Store df data in file_contents
+                    st.session_state.file_contents = df
+                    # Create columns for data cells
+                    # Cells listed in columns are in order of rows
+                    col1, col2, col3 = st.columns(spec=3, width="stretch")
+                
+                    #region Column 1
+                    with col1:
+                        cell_speed(st.session_state.file_contents)
+                        cell_heart_rate(st.session_state.file_contents, live_connection=st.session_state.live_connection)
+                    #endregion Column 1
+                
+                    #region Column 2
+                    with col2:
+                        cell_acceleration(st.session_state.file_contents)
+                    #endregion Column 2
+                
+                    #region Column 3
+                    with col3:
+                        cell_odometry(st.session_state.file_contents)
+                    #endregion Column 3
+                    
                     # Prints data frames
                     print(df.tail(1))
 
                     # Update live connection to true
-                    live_connection = True
-
-                    # Store df data in file_contents
-                    file_contents = df
+                    
 
         if(st.session_state.data_to_csv == False):
-
-            # Update live connection to false
-            live_connection = False
             break
 except Exception as exc:
     # Declare connection could not be made
@@ -145,43 +170,13 @@ except Exception as exc:
 #region Live Connection Display
 # Widget showing if connection to live data is active
 with st.sidebar:
-    if live_connection is True:
+    if st.session_state.live_connection is True:
         st.success("Live")
     else:
         st.error("No Data Stream")
 #endregion Live Connection Display
 
 #region Data Visualizer
-
-# Check for valid file contents, a live connection made
-if(file_contents != None and live_connection == True):
-
-    # Create columns for data cells
-    # Cells listed in columns are in order of rows
-    col1, col2, col3 = st.columns(spec=3, width="stretch")
-
-    #region Column 1
-    with col1:
-
-        cell_speed(file_contents)
-
-        cell_heart_rate(file_contents, live_connection=live_connection)
-
-    #endregion Column 1
-
-    #region Column 2
-    with col2:
-
-        cell_acceleration(file_contents)
-
-    #endregion Column 2
-
-    #region Column 3
-    with col3:
-
-        cell_odometry(file_contents)
-
-    #endregion Column 3
 
 #endregion Data Visualizer
 
