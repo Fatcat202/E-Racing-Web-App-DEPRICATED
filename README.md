@@ -41,6 +41,8 @@ To launch the software, use `streamlit run Main.py` in your IDE's integrated ter
   (Your code here) <br/>
 #endregion (Title of region)
 - Files/Folders are to be named in the style listed: (Scripts.py, Live_Data.py, Trial_Data, Images)
+- Scripts are to start with the prefix scr_
+- Cells are to start with the prefix cell_
 - Libraries used should be displayed at the top of files in the format: `#import streamlit as py      #pip install streamlit`
 - Tabs, not spaces.
 
@@ -52,6 +54,7 @@ Pages <br/>
 Navigation <br/>
 E-Racing Logo <br/>
 - Scripts.py holds frequently used scripts.
+- Cells.py holds data cells, preconstructed containers holding graphs and other methods of displaying data.
 - The folder Trial_Data contains saved test run data as CSV files.
 - Loading data for analysis functions as follows: Upload Data --> Select File --> View Data
 
@@ -80,7 +83,14 @@ E-Racing Logo <br/>
 - percent_HRmax (Float): Percentage of driver's heart rate relative to max.<br/>
 - intensity_zone (String): Heart Rate Zone the driver is in. <br/>
 #### Purpose: Calculate driver heart rate zones based on active heart rate and age.
-  
+
+### scr_delete_file_popup(folder_path, selected_filename) <br/>
+#### Parameters: <br/>
+- folder_path (String): Pass through path of folder with file located inside <br/>
+- selected_filename (String): Pass through name of file to be deleted <br/>
+#### Returns: <br/>
+- None <br/>
+#### Purpose: Creates a dialogue popup checking if user truly wants to delete selected file.
   
 
 
