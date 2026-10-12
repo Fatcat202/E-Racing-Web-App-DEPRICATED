@@ -113,14 +113,13 @@ try:
                     rows.append(result)
                     # Save decoded data to CSV as it arrives
                     df = pd.DataFrame(rows)
-                    df['dt'] = df["time"].diff().fillna(0)
                     df['time'] = df['t'] - df.loc[0,'t']
                     df['AccelerationX'] = df['AccelerationX'] - df.loc[0,'AccelerationX']
                     df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
                     df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
                     df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
-                    df['Speed'] = (df['Acceleration']*df['dt']).cumsum()
-                    df['Distance'] = (df['Speed']*df['dt']).cumsum()
+                    df['Speed'] = (df['Acceleration']*0.1).cumsum()
+                    df['Distance'] = (df['Speed']*0.1).cumsum()
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
                     # Prints data frames
