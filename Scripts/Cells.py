@@ -2,17 +2,12 @@ import streamlit as st          # pip install streamlit
 import pandas as pd             # streamlit dependency
 from Scripts.Scripts import scr_calculate_heart_rate_zone
 
-heart = st.empty()
-speed = st.empty()
-acceleration = st.empty()
-odometry = st.empty()
-attitude = st.empty()
 
 #region Heart Rate
 def cell_heart_rate(file_contents, live_connection=False):
     # Pass through file contents, normally selected_file_contents
 
-    with heart.container(border=True):
+    with st.container(border=True):
 
         st.header("Heart Rate Data", text_alignment="center")
         # Check if necessary data types exist
@@ -47,7 +42,7 @@ def cell_heart_rate(file_contents, live_connection=False):
 
 #region Odometry Data
 def cell_odometry(file_contents):
-    with odometry.container(border=True):
+    with st.container(border=True):
         # Pass through file contents, normally selected_file_contents
 
         st.header("Odometry Data", text_alignment="center")
@@ -61,7 +56,7 @@ def cell_odometry(file_contents):
 
 #region Acceleration Data
 def cell_acceleration(file_contents):
-    with acceleration.container(border=True):
+    with st.container(border=True):
         # Pass through file contents, normally selected_file_contents
 
         st.header("Acceleration Data", text_alignment="center")
@@ -75,7 +70,7 @@ def cell_acceleration(file_contents):
 
 #region Speed Data
 def cell_speed(file_contents):
-    with speed.container(border=True):
+    with st.container(border=True):
         st.header("Speed Data", text_alignment="center")
         # Check if necessary data types exist
         if(not "Speed" in file_contents or not "time" in file_contents):
@@ -87,7 +82,7 @@ def cell_speed(file_contents):
 
 #region Attitude Data
 def cell_attitude(file_contents):
-    with attitude.container(border=True):
+    with st.container(border=True):
         st.header("Attitude Data", text_alignment="center")
         # Check if necessary data types exist
         if(not "Heading" in file_contents or not "time" in file_contents or not "Pitch" in file_contents or not "Roll" in file_contents):
