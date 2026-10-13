@@ -65,13 +65,16 @@ with st.container():
             selected_file = file_chosen
             # Holds name of file chosen
             file_name = os.path.basename(file_chosen)
-
-            # TODO: Unclear code, requires commenting for further explanation
+            # extracts filenames from path and stores it in the variable file_name
             df = pd.read_csv(str(file_chosen))
+            # opens and reads the csv file selected and stores the result in the variable df
             @st.cache_data
+            # Caches functions that return data
             def convert_for_download(df):
                 return df.to_csv().encode("utf-8")
+            # encodes the data to the csv file in utf-8
             data = convert_for_download(df)
+            # converts the csv file for download from the web app
 
 
             # Keeps buttons rendered together in container
