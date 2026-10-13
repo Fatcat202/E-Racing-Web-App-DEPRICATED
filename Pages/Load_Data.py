@@ -57,14 +57,14 @@ with st.container():
         file_chosen = st.selectbox("Select an uploaded file to view:", options = uploaded_options)
 
         # Variable to hold contents of file uploaded for actions
-        selected_file_contents = None
+        file_contents = None
 
         # If file is selected, allow for action to take place
         if(file_chosen is not "Select Option"):
             # Declares selected file
             selected_file = file_chosen
             # Holds name of file chosen
-            selected_file_name = os.path.basename(file_chosen)
+            file_name = os.path.basename(file_chosen)
 
             # TODO: Unclear code, requires commenting for further explanation
             df = pd.read_csv(str(file_chosen))
@@ -79,14 +79,14 @@ with st.container():
 
                 # Button allowing for data to be viewed
                 if st.button(label = "View Data") and selected_file is not None:
-                    selected_file_contents = pd.read_csv(selected_file)
+                    file_contents = pd.read_csv(selected_file)
 
                 # Download file to local drive
-                st.download_button(label = "Download File", data = data,file_name=selected_file_name)
+                st.download_button(label = "Download File", data = data,file_name=file_name)
 
                 if st.button("Delete File"):
                     #popup for confirming deletion
-                    scr_delete_file_popup('Trial_Data',selected_file_name)
+                    scr_delete_file_popup('Trial_Data',file_name)
 
 
 #endregion File Selection
@@ -97,7 +97,7 @@ with st.container():
 #region Data Visualizer
 
 # Check for valid file contents
-if(selected_file_contents is not None):
+if(file_contents is not None):
     
     # Create columns for data cells
     # Cells listed in columns are in order of rows
@@ -106,23 +106,23 @@ if(selected_file_contents is not None):
     #region Column 1
     with col1:
 
-        cell_speed(selected_file_contents)
+        cell_speed(file_contents)
 
-        cell_heart_rate(selected_file_contents)
+        cell_heart_rate(file_contents)
 
     #endregion Column 1
 
     #region Column 2
     with col2:
 
-        cell_acceleration(selected_file_contents)
+        cell_acceleration(file_contents)
 
     #endregion Column 2
 
     #region Column 3
     with col3:
 
-        cell_odometry(selected_file_contents)
+        cell_odometry(file_contents)
 
     #endregion Column 3
 

@@ -2,12 +2,16 @@ import streamlit as st          # pip install streamlit
 import pandas as pd             # streamlit dependency
 from Scripts.Scripts import scr_calculate_heart_rate_zone
 
+heart = st.empty()
+speed = st.empty()
+acceleration = st.empty()
+odometry = st.empty()
 
 #region Heart Rate
 def cell_heart_rate(file_contents, live_connection=False):
     # Pass through file contents, normally selected_file_contents
 
-    with st.container(border=True):
+    with heart.container(border=True):
 
         st.header("Heart Rate Data", text_alignment="center")
         # Check if necessary data types exist
@@ -42,7 +46,7 @@ def cell_heart_rate(file_contents, live_connection=False):
 
 #region Odometry Data
 def cell_odometry(file_contents):
-    with st.container(border=True):
+    with odometry.container(border=True):
         # Pass through file contents, normally selected_file_contents
 
         st.header("Odometry Data", text_alignment="center")
@@ -56,7 +60,7 @@ def cell_odometry(file_contents):
 
 #region Acceleration Data
 def cell_acceleration(file_contents):
-    with st.container(border=True):
+    with acceleration.container(border=True):
         # Pass through file contents, normally selected_file_contents
 
         st.header("Acceleration Data", text_alignment="center")
@@ -70,7 +74,7 @@ def cell_acceleration(file_contents):
 
 #region Speed Data
 def cell_speed(file_contents):
-    with st.container(border=True):
+    with speed.container(border=True):
         st.header("Speed Data", text_alignment="center")
         # Check if necessary data types exist
         if(not "Speed" in file_contents or not "time" in file_contents):
