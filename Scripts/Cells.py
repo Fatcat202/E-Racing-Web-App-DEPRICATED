@@ -6,6 +6,7 @@ heart = st.empty()
 speed = st.empty()
 acceleration = st.empty()
 odometry = st.empty()
+attitude = st.empty()
 
 #region Heart Rate
 def cell_heart_rate(file_contents, live_connection=False):
@@ -84,3 +85,14 @@ def cell_speed(file_contents):
             speed_graph = st.line_chart(data=file_contents, x="time", y="Speed", x_label="Time (s)", y_label="Speed (m/s)")
 #endregion Speed Data
 
+#region Attitude Data
+def cell_attitude(file_contents):
+    with attitude.container(border=True):
+        st.header("Attitude Data", text_alignment="center")
+        # Check if necessary data types exist
+        if(not "Heading" in file_contents or not "time" in file_contents or not "Pitch" in file_contents or not "Roll" in file_contents):
+            st.error("Error: Speed Data Not Found")
+        else:
+            # Creating speed chart
+            speed_graph = st.line_chart(data=file_contents, x="time", y=["Heading","Pitch","Roll"], x_label="Time (s)", y_label="Attitude")
+#endregion Speed Data
