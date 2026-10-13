@@ -107,24 +107,38 @@ try:
                         
                     # Create columns for data cells
                     # Cells listed in columns are in order of rows
+                    options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],)
                     col1, col2, col3 = column.columns(spec=3, width="stretch")
                 
                     #region Column 1
                     with col1:
-                        cell_speed(df)
-                        cell_heart_rate(df, True)
+                        if "Speed" in options:
+                            cell_speed(df)
+                        else:
+                            st.empty()
+                
+                        if "Heart" in options:
+                            cell_heart_rate(df)
+                        else:
+                            st.empty()
             
                 #endregion Column 1
             
                 #region Column 2
                     with col2:
-                        cell_acceleration(df)
+                        if "Acceleration" in options:
+                            cell_acceleration(df)
+                        else:
+                            st.empty()
             
                 #endregion Column 2
             
                 #region Column 3
                     with col3:
-                        cell_odometry(df)
+                        if "Odometry" in options:
+                            cell_odometry(df)
+                        else:
+                            st.empty()
                     
                         #endregion Column 3
                     # Prints data frames

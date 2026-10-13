@@ -57,7 +57,8 @@ with st.container():
         file_chosen = st.selectbox("Select an uploaded file to view:", options = uploaded_options)
 
         # Variable to hold contents of file uploaded for actions
-        file_contents = None
+        if "file_contents" not in st.session_state:
+            st.session_state.file_contents = None
 
         # If file is selected, allow for action to take place
         if(file_chosen is not "Select Option"):
@@ -78,8 +79,10 @@ with st.container():
             with st.container(horizontal = True, wrap = False):
 
                 # Button allowing for data to be viewed
-                if st.button(label = "View Data") and selected_file is not None:
-                    file_contents = pd.read_csv(selected_file)
+                if st.button(label="View Data") and selected_file is not None:
+                    st.session_state.file_contents = pd.read_csv(selected_file)
+
+                file_contents = st.session_state.file_contents
 
                 # Download file to local drive
                 st.download_button(label = "Download File", data = data,file_name=file_name)
@@ -98,31 +101,41 @@ with st.container():
 
 # Check for valid file contents
 if(file_contents is not None):
-    
+    options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],)
     # Create columns for data cells
     # Cells listed in columns are in order of rows
     col1, col2, col3 = st.columns(spec=3, width="stretch")
 
     #region Column 1
     with col1:
+        if "Speed" in options:
+            cell_speed(file_contents)
+        else:
+            st.empty()
 
-        cell_speed(file_contents)
-
-        cell_heart_rate(file_contents)
+        if "Heart" in options:
+            cell_heart_rate(file_contents)
+        else:
+            st.empty()
 
     #endregion Column 1
 
     #region Column 2
     with col2:
-
-        cell_acceleration(file_contents)
+        if "Acceleration" in options:
+            cell_acceleration(file_contents)
+        else:
+            st.empty()
 
     #endregion Column 2
 
     #region Column 3
     with col3:
-
-        cell_odometry(file_contents)
+        if "Odometry" in options:
+            cell_odometry(file_contents)
+        else:
+            st.empty()
+        
 
     #endregion Column 3
 
