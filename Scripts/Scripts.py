@@ -2,6 +2,8 @@ import streamlit as st          # pip install streamlit
 import pandas as pd             # streamlit dependency
 import numpy as np              # streamlit dependency
 import pathlib as pl            # pip install pathlib
+import os
+import math
 
 # Script used to calculate driver heart rate zone
 def scr_calculate_heart_rate_zone(heart_rate=0, age=0):
@@ -32,15 +34,18 @@ def scr_calculate_heart_rate_zone(heart_rate=0, age=0):
     
     # Output percentage of HRmax
     return percent_HRmax, intensity_zone
-  
-  
-# Script used to create a line chart
-def scr_line_chart(file_name = "", x_title = "", y_title = ""):
-    # Pass through file_name as string
-    # Pass through X and Y axis titles as strings
 
-    # Check file_name was passed through
-    if(not pl.Path.is_file(file_name)): return st.error("Error: File name not found")
+#region Delete File Popup
 
-    df = pd.read_csv(file_name)
-    return st.line_chart(df, x = x_title, y = y_title) # create the chart and assign the chart axis with the right headings #
+#a Confirmation popup to confirms that the user wants to delete the file
+@st.dialog("Confirmation popup")
+def scr_delete_file_popup(folder_path, selected_filename):
+    st.write(f"Are you sure you want to delete {selected_filename}? THIS ACTION IS IRREVERSIBLE")
+    if st.button("Delete"):
+        result = os.path.join(folder_path, selected_filename)
+        # A delete file in the case of accidental deletion or sabotage
+        os.makedirs("Deleted_files", exist_ok=True)
+        os.replace(f'{result}',f'Deleted_files/{selected_filename}')
+        st.rerun()
+
+#endregion Delete File Popup

@@ -1,235 +1,135 @@
-import streamlit as st          #pip install streamlit
-import pandas as pd             #streamlit dependency
-import numpy as np              #streamlit dependency
-import csv                      #
-import pathlib as pl            # pip install pathlib
-from Scripts import scr_line_chart, scr_calculate_heart_rate_zone
-
-
-#Page used to display live data
-
-
-#Region Data Loading
-
-# Hard coded placeholder data
-testing_file = "Trial_Data/data.csv"
-# TODO Load data from network
-
-# Holds file loaded
-data_file = testing_file
-
-# Read the contents of file loaded
-data_file_contents = pd.read_csv(data_file)
-
-
-
-
-#endregion Data Loading
-
-
-#region Variables
-
-# Declares if a live connection to data is established, default false
-live_connection = False
-
-# Most recently read heart rate data
-active_heart_rate = data_file_contents["Heart Rate"].iloc[-1]
-
-
-
-#endregion Variables
-
-
-#region Page Titles
-
-# Display title
-st.header("Live Data", divider=True)
-# Display sidebar title
-st.sidebar.markdown("Live Data")
-
-
-# Widget showing if connection to live data is active
-with st.sidebar:
-    if live_connection is True:
-        st.success("Live")
-    else:
-        st.error("No Data Stream")
-
-#endregion Page Titles
-
-
-#region Data Visualizer
-
-#region Heart Rate
-
-# Set to true for testing
-with st.expander("Heart Rate Data"):
-    # Check if necessary data types exist
-    if(not "Heart Rate" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Heart Rate Data Not Found")
-    else:
-
-        # Creating Heart Rate chart
-        HR_chart = scr_line_chart(data_file, "Time", "Heart Rate")
-
-        # Numerical input for driver age
-        driver_age = 0
-        driver_age = st.number_input("Enter Driver Age:", min_value = 0, max_value = 99)
-
-        # Calculate HR data
-        percent_HRmax, zone_HR = scr_calculate_heart_rate_zone(active_heart_rate, driver_age)
-        # Change from decimal to percent
-        percent_HRmax *= 100
-        # Modify percent to have a max of 4 digits
-        percent_HRmax = f'{percent_HRmax:.4}'
-
-        # Heart rate, Percent, and HR zone display
-        col1, col2, col3 = st.columns(3)
-        col1.metric(label = "Heart Rate", value = active_heart_rate, border = True)
-        col2.metric(label = "HRmax%", value = percent_HRmax, border = True)
-        col3.metric(label = "HR Zone", value = zone_HR, border = True)
-
-        #TODO: implement heart rate data graphs
-
-#endregion Heart Rate
-
-#region Suspension
-
-with st.expander("Suspension Data"):
-
-    #Left Front Suspension
-    if(not "LF Suspension" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: LF Suspension Data Not Found")
-   # else:
-        #TODO: implement left front data graph
-
-    #Right Front Suspension
-    if(not "RF Suspension" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: RF Suspension Data Not Found")
-   # else:
-        #TODO: implement right front data graph
-
-    #Left Rear Suspension
-    if(not "LR Suspension" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: LR Suspension Data Not Found")
-   # else:
-        #TODO: implement left rear data graph
-
-    #Right Rear Suspension
-    if(not "RR Suspension" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: RR Suspension Data Not Found")
-   # else:
-        #TODO: implement right rear data graph
-
-#endregion Suspension
-         
-#region Motor
-
-with st.expander("Motor Data"):
-    if(not "RPM" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Motor Data Not Found")
- #   else:
-        #TODO: implement motor data graphs
-
-#endregion Motor
-
-#region HV Battery
-
-with st.expander("HV Battery Data"):
-    if(not "HV Charge" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: HV Battery Data Not Found")
- #   else:
-        #TODO: implement HV battery data graphs
-
-#endregion HV Battery
-
-#region LV Battery
-
-with st.expander("LV Battery Data"):
-    if(not "LV Charge" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: LV Battery Data Not Found")
- #   else:
-        #TODO: implement LV battery data graphs
-
-#endregion LV Battery
-
-#region Aero Data
-
-with st.expander("Aero Data"):
-    if(not "Aero" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Aero Data Not Found")
-  #  else:
-        #TODO: implement Aero data graphs
-
-#endregion Aero Data
-
-#region Speed
-
-# Gathered from CAN
-with st.expander("Speed Data"):
-    if(not "Speed" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Speed Data Not Found")
- #   else:
-        #TODO: implement Speed data graphs
-
-#endregion Speed
-
-#region Attitude
-
-# Gathered from CAN
-with st.expander("Attitude Data"):
-    if(not "Attitude" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Attitude Data Not Found")
- #   else:
-        #TODO: implement Attitude data graphs
-
-#endregion Attitude
-
-#region Odometer
-
-# Gathered from CAN
-with st.expander("Odometer Data"):
-    if(not "Odometer" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Odometer Data Not Found")
-    #else:
-        #TODO: implement Odometer data graphs
-
-#endregion Odometer
-
-#region Acceleration
-
-# Gathered from CAN
-with st.expander("Acceleration Data"):
-    if(not "Acceleration" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Acceleration Data Not Found")
- #   else:
-    #TODO: implement Acceleration data graphs (mohammed-done)
-
-#endregion Acceleration
-
-#region Angular Data
-
-# Gathered from CAN
-with st.expander("Angular Data"):
- if(not "Angular" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Angular Data Not Found")
-# else:
-    #TODO: implement Angular data graphs
-
-#endregion Angular Data
-
-#region Vibration Data
-
-with st.expander("Vibration Data"):
- if(not "Vibration" in data_file_contents or not "Time" in data_file_contents):
-        st.error("Error: Vibration Data Not Found")
-# else:
-     #TODO: implement Vibration data graphs
-
-#endregion Vibration Data
-
-
-#endregion Data Visualizer
-
-
-
+import os # pip install os
+from cantools import database # pip install cantools
+import pandas as pd 
+import can # pip install can
+import streamlit as st # pip install streamlit
+import serial.tools.list_ports
+from time import gmtime, strftime
+from datetime import datetime
+from Scripts.Scripts import *
+from Scripts.Cells import *
+import os
+from cantools import database   # pip install cantools
+import can                      # pip install python-can
+import serial.tools.list_ports  # pip install python-can-csscan-serial
+from time import gmtime, strftime
+from datetime import datetime
+
+
+date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+ports = [port.device for port in serial.tools.list_ports.comports()]
+
+st.session_state.data_to_csv = False 
+
+st.header("Live Data", divider=True) # page title
+st.sidebar.markdown("Live Data") # sidebar page title
+port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
+
+    
+if(port_chosen is not "Select Option"):
+    print(str(st.session_state.data_to_csv)+"1")
+    if st.button("Start Reading Data"):
+        st.session_state.data_to_csv = True 
+    if st.button("Stop Reading Data"):
+        st.session_state.data_to_csv = False
+
+# locate the dbc file for decoding instructions 
+dbc_path = os.path.join("CAN", "canmod-gps.dbc")
+
+# checking for dbc file in dbc_path
+if not os.path.exists(dbc_path): 
+    raise FileNotFoundError(f"DBC file not found: {dbc_path}") 
+
+db = database.load_file(dbc_path, strict=False) # read the dbc instructions in dbc file
+rows = [] # starts a list to store decoded CAN frames
+
+# Create placeholder columns to prevent replication
+column = st.empty()
+
+
+class CANdecoder:  
+    def __init__(self, dbc_file): # method for decoding object
+        self.db = database.load_file(dbc_file, strict=False) # stores dbc_file in decoding object
+    def decode(self, msg): # method for receiving raw CAN data 
+        try:
+            db_msg = self.db.get_message_by_frame_id(msg.arbitration_id) # matching CAN frame id to dbc id to interpret it 
+        except KeyError: # what if the CAN frame has no matching dbc
+            return None # skip that message without stopping
+
+        try:
+            result = self.db.decode_message(db_msg.name, data=msg.data) # decode raw data and store in result
+        except Exception: # what if it cant be decoded
+            return None # skip and continue 
+
+        result["t"] = msg.timestamp # timestamping the decoded data in result
+        result["message_name"] = db_msg.name # add decoded message name in result
+        return result, db_msg
+
+    # returns the data frame
+    def data_frame(self, data):
+        if data is None:
+            return None
+
+        result, db_msg = data
+
+        return pd.DataFrame([result])
+
+
+# connect to the CANmod.gps device
+try:
+    while (st.session_state.data_to_csv == True):
+        with can.Bus(interface="csscan_serial", channel="COM5") as bus:
+            # continuously listen for incoming frames (messages)
+            canmod_gps = CANdecoder(dbc_path)
+            for msg in bus:
+                if(st.session_state.data_to_csv == False):
+                            break
+                
+                decoded = canmod_gps.decode(msg)
+                if decoded is not None:
+                    result, db_msg = decoded
+                    for key in list(result):
+                        if "valid" in key.lower() or "accuracy" in key.lower():
+                            del result[key]
+                    rows.append(result)
+                    # Save decoded data to CSV as it arrives
+                    df = pd.DataFrame(rows)
+                    
+                    df['time'] = df['t'] - df.loc[0,'t']
+                    df['dt'] = df["time"].diff().fillna(0)
+                    df['AccelerationX'] = df['AccelerationX'] - df.loc[0,'AccelerationX']
+                    df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
+                    df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
+                    df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
+                    name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
+                    df.to_csv(str(name),index=False,encoding='utf-8')
+                    
+                        
+                    # Create columns for data cells
+                    # Cells listed in columns are in order of rows
+                    col1, col2, col3 = column.columns(spec=3, width="stretch")
+                
+                    #region Column 1
+                    with col1:
+                        cell_speed(df)
+                        cell_heart_rate(df, True)
+            
+                #endregion Column 1
+            
+                #region Column 2
+                    with col2:
+                        cell_acceleration(df)
+            
+                #endregion Column 2
+            
+                #region Column 3
+                    with col3:
+                        cell_odometry(df)
+                    
+                        #endregion Column 3
+                    # Prints data frames
+                    print(df.tail(1))
+        if(st.session_state.data_to_csv == False):
+            break
+except Exception as exc:
+    print(exc)
