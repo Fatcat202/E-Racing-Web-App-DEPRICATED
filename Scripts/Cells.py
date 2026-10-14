@@ -2,16 +2,12 @@ import streamlit as st          # pip install streamlit
 import pandas as pd             # streamlit dependency
 from Scripts.Scripts import scr_calculate_heart_rate_zone
 
-heart = st.empty()
-speed = st.empty()
-acceleration = st.empty()
-odometry = st.empty()
 
 #region Heart Rate
-def cell_heart_rate(file_contents, live_connection=False):
+def cell_heart_rate(file_contents, x_axis, live_connection=False):
     # Pass through file contents, normally selected_file_contents
 
-    with heart.container(border=True):
+    with st.container(border=True):
 
         st.header("Heart Rate Data", text_alignment="center")
         # Check if necessary data types exist
@@ -19,7 +15,10 @@ def cell_heart_rate(file_contents, live_connection=False):
             st.error("Error: Heart Rate Data Not Found")
         else:
             # Creating Heart Rate chart
-            HR_chart = st.line_chart(data=file_contents, x="Time", y="Heart Rate" , x_label="Time (S)")
+            if x_axis == "time":
+                HR_chart = st.line_chart(data=file_contents, x="Time", y="Heart Rate" , x_label="Time (S)")
+            elif x_axis == "distance":
+                HR_chart = st.line_chart(data=file_contents, x="Distance", y="Heart Rate" , x_label="Distance (m)")
 
             if(live_connection == True):
                 # Numerical input for driver age
@@ -46,7 +45,7 @@ def cell_heart_rate(file_contents, live_connection=False):
 
 #region Odometry Data
 def cell_odometry(file_contents):
-    with odometry.container(border=True):
+    with st.container(border=True):
         # Pass through file contents, normally selected_file_contents
 
         st.header("Odometry Data", text_alignment="center")
@@ -59,8 +58,8 @@ def cell_odometry(file_contents):
 #endregion Odometry Data
 
 #region Acceleration Data
-def cell_acceleration(file_contents):
-    with acceleration.container(border=True):
+def cell_acceleration(file_contents, x_axis):
+    with st.container(border=True):
         # Pass through file contents, normally selected_file_contents
 
         st.header("Acceleration Data", text_alignment="center")
@@ -69,18 +68,35 @@ def cell_acceleration(file_contents):
             st.error("Error: Acceleration Data Not Found")
         else:
             # Creating acceleration chart
-            accel_chart = st.line_chart(data=file_contents, x="time", y="Acceleration", x_label="Time (s)")
+            if x_axis == "time":
+                accel_chart = st.line_chart(data=file_contents, x="time", y="Acceleration", x_label="Time (s)")
+            elif x_axis == "distance":
+                accel_chart = st.line_chart(data=file_contents, x="Distance", y="Acceleration", x_label="Distance (m)")
 #endregion Acceleration Data
 
 #region Speed Data
-def cell_speed(file_contents):
-    with speed.container(border=True):
+def cell_speed(file_contents, x_axis):
+    with st.container(border=True):
         st.header("Speed Data", text_alignment="center")
         # Check if necessary data types exist
         if(not "Speed" in file_contents or not "time" in file_contents):
             st.error("Error: Speed Data Not Found")
         else:
-            # Creating speed chart
-            speed_graph = st.line_chart(data=file_contents, x="time", y="Speed", x_label="Time (s)", y_label="Speed (m/s)")
+            # Creating Speed chart
+            if x_axis == "time":
+                accel_chart = st.line_chart(data=file_contents, x="time", y="Speed", x_label="Time (s)")
+            elif x_axis == "distance":
+                accel_chart = st.line_chart(data=file_contents, x="Distance", y="Speed", x_label="Distance (m)")
 #endregion Speed Data
 
+#region Attitude Data
+def cell_attitude(file_contents):
+    with st.container(border=True):
+        st.header("Attitude Data", text_alignment="center")
+        # Check if necessary data types exist
+        if(not "Heading" in file_contents or not "time" in file_contents or not "Pitch" in file_contents or not "Roll" in file_contents):
+            st.error("Error: Speed Data Not Found")
+        else:
+            # Creating speed chart
+            speed_graph = st.line_chart(data=file_contents, x="time", y=["Heading","Pitch","Roll"], x_label="Time (s)", y_label="Attitude")
+#endregion Speed Data
