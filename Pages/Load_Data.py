@@ -114,7 +114,7 @@ if(file_contents is not None):
             st.empty()
 
         if "Heart" in options:
-            cell_heart_rate(file_contents)
+            cell_heart_rate(file_contents, True)
         else:
             st.empty()
 
