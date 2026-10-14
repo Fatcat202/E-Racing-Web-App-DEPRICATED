@@ -15,23 +15,22 @@ import serial.tools.list_ports  # pip install python-can-csscan-serial
 from time import gmtime, strftime
 from datetime import datetime
 
+st.set_page_config(layout="wide")
 
 date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
 st.session_state.data_to_csv = False 
 with st.container():
-    with st.expander("File System", expanded=True):
+    with st.expander("Live data", expanded=True):
         st.header("Live Data", divider=True) # page title
         st.sidebar.markdown("Live Data") # sidebar page title
         port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
-        with st.expander("Advanced options", expanded=False):
-            options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],key=f"graphs")
-
-
-            
         if port_chosen != "Select Option":
+            with st.expander("Advanced options", expanded=False):
+                options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],key=f"graphs")
+                x_axis = st.multiselect("For which data do you want the x-axis to be Distance",["Heart", "Speed", "Acceleration"],default=[],key=f"graph1")                                 
             print(str(st.session_state.data_to_csv)+"1")
             if st.button("Start Reading Data"):
                 st.session_state.data_to_csv = True 
@@ -106,6 +105,8 @@ try:
                     df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
                     df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
                     df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
+                    df["Distance"] = 0
+                    df["Speed"] = 0
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
                     
@@ -116,8 +117,7 @@ try:
                     #region Column 1
                     with col1:
                         if "Speed" in options:
-                            speed = st.toggle("Distance",key=f"Speed{msg}")
-                            if speed:
+                            if "Speed" in x_axis:
                                 cell_speed(df,"distance")
                             else:
                                 cell_speed(df,"time")
@@ -125,8 +125,7 @@ try:
                             st.empty()
                 
                         if "Heart" in options:
-                            Heart = st.toggle("Distance",key=f"Heart{msg}")
-                            if Heart:
+                            if "Heart" in x_axis:
                                 cell_heart_rate(df,"distance" , True)
                             else:
                                 cell_heart_rate(df,"time" , True)
@@ -138,8 +137,7 @@ try:
                 #region Column 2
                     with col2:
                         if "Acceleration" in options:
-                            acceleration = st.toggle("Distance",key=f"acceleration{msg}")
-                            if acceleration:
+                            if "Acceleration" in x_axis:
                                 cell_acceleration(df,"distance")
                             else:
                                 cell_acceleration(df,"time")
