@@ -26,7 +26,7 @@ st.sidebar.markdown("Live Data") # sidebar page title
 port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
     
-if(port_chosen is not "Select Option"):
+if port_chosen != "Select Option":
     print(str(st.session_state.data_to_csv)+"1")
     if st.button("Start Reading Data"):
         st.session_state.data_to_csv = True 
@@ -113,12 +113,20 @@ try:
                     #region Column 1
                     with col1:
                         if "Speed" in options:
-                            cell_speed(df)
+                            speed = st.toggle("Distance",key="Speed1")
+                            if speed:
+                                cell_speed(df,"distance")
+                            else:
+                                cell_speed(df,"time")
                         else:
                             st.empty()
                 
                         if "Heart" in options:
-                            cell_heart_rate(df)
+                            Heart = st.toggle("Distance",key="Heart1")
+                            if Heart:
+                                cell_heart_rate(df,"distance" , True)
+                            else:
+                                cell_heart_rate(df,"time" , True)
                         else:
                             st.empty()
             
@@ -127,7 +135,11 @@ try:
                 #region Column 2
                     with col2:
                         if "Acceleration" in options:
-                            cell_acceleration(df)
+                            acceleration = st.toggle("Distance",key="acceleration")
+                            if acceleration:
+                                cell_acceleration(df,"distance")
+                            else:
+                                cell_acceleration(df,"time")
                         else:
                             st.empty()
             

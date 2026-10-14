@@ -58,7 +58,9 @@ with st.container():
 
         # Variable to hold contents of file uploaded for actions
         if "file_contents" not in st.session_state:
+            file_contents = None
             st.session_state.file_contents = None
+
 
         # If file is selected, allow for action to take place
         if(file_chosen is not "Select Option"):
@@ -108,13 +110,22 @@ if(file_contents is not None):
 
     #region Column 1
     with col1:
+
         if "Speed" in options:
-            cell_speed(file_contents)
+            speed = st.toggle("Distance",key="Speed")
+            if speed:
+                cell_speed(file_contents,"distance")
+            else:
+                cell_speed(file_contents,"time")
         else:
             st.empty()
 
         if "Heart" in options:
-            cell_heart_rate(file_contents, True)
+            Heart = st.toggle("Distance",key="Heart")
+            if Heart:
+                cell_heart_rate(file_contents,"distance" , True)
+            else:
+                cell_heart_rate(file_contents,"time" , True)
         else:
             st.empty()
 
@@ -123,7 +134,11 @@ if(file_contents is not None):
     #region Column 2
     with col2:
         if "Acceleration" in options:
-            cell_acceleration(file_contents)
+            acceleration = st.toggle("Distance",key="acceleration")
+            if acceleration:
+                cell_acceleration(file_contents,"distance")
+            else:
+                cell_acceleration(file_contents,"time")
         else:
             st.empty()
 
