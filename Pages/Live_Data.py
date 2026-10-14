@@ -1,9 +1,12 @@
-import streamlit as st          #pip install streamlit
-import pandas as pd             #streamlit dependency
-import numpy as np              #streamlit dependency
-import csv                      #
-import pathlib as pl            # pip install pathlib
-from Scripts.Scripts import scr_calculate_heart_rate_zone
+import os # pip install os
+from cantools import database # pip install cantools
+import pandas as pd 
+import can # pip install can
+import streamlit as st # pip install streamlit
+import serial.tools.list_ports
+from time import gmtime, strftime
+from datetime import datetime
+from Scripts.Scripts import *
 from Scripts.Cells import *
 import os
 from cantools import database   # pip install cantools
@@ -13,49 +16,21 @@ from time import gmtime, strftime
 from datetime import datetime
 
 
-#Page used to display live data
-
-#region Variables
-
-# Declares if a live connection to data is established, default false
-live_connection = False
-
-# Holds contents of file. Filled in CAN Input
-file_contents = None
-
-#endregion Variables
-
-#region Page Titles
-
-# Display title
-st.header("Live Data", divider=True)
-# Display sidebar title
-st.sidebar.markdown("Live Data")
-
-# Page Configuration
-st.set_page_config(layout="wide")
-
-#endregion Page Titles
-
-#region CAN Input
-
-# Find current time for filename
 date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-# Locate all ports
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
 st.session_state.data_to_csv = False 
 
-# Allow user to select port
-port_chosen = st.selectbox("Select a Port Connection to CAN:", options = ["Select Option"]+ports)
+st.header("Live Data", divider=True) # page title
+st.sidebar.markdown("Live Data") # sidebar page title
+port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
-# Allow user to start and stop data connection
+    
 if(port_chosen is not "Select Option"):
     print(str(st.session_state.data_to_csv)+"1")
-    if st.button("Start reading data"):
+    if st.button("Start Reading Data"):
         st.session_state.data_to_csv = True 
-    if st.button("stop reading data"):
+    if st.button("Stop Reading Data"):
         st.session_state.data_to_csv = False
 
 # locate the dbc file for decoding instructions 
@@ -68,6 +43,9 @@ if not os.path.exists(dbc_path):
 db = database.load_file(dbc_path, strict=False) # read the dbc instructions in dbc file
 rows = [] # starts a list to store decoded CAN frames
 
+# Create placeholder columns to prevent replication
+column = st.empty()
+
 
 class CANdecoder:  
     def __init__(self, dbc_file): # method for decoding object
@@ -77,6 +55,7 @@ class CANdecoder:
             db_msg = self.db.get_message_by_frame_id(msg.arbitration_id) # matching CAN frame id to dbc id to interpret it 
         except KeyError: # what if the CAN frame has no matching dbc
             return None # skip that message without stopping
+
         try:
             result = self.db.decode_message(db_msg.name, data=msg.data) # decode raw data and store in result
         except Exception: # what if it cant be decoded
@@ -90,9 +69,11 @@ class CANdecoder:
     def data_frame(self, data):
         if data is None:
             return None
-        
+
         result, db_msg = data
+
         return pd.DataFrame([result])
+
 
 # connect to the CANmod.gps device
 try:
@@ -113,76 +94,42 @@ try:
                     rows.append(result)
                     # Save decoded data to CSV as it arrives
                     df = pd.DataFrame(rows)
-                    df['dt'] = df["time"].diff().fillna(0)
+                    
                     df['time'] = df['t'] - df.loc[0,'t']
+                    df['dt'] = df["time"].diff().fillna(0)
                     df['AccelerationX'] = df['AccelerationX'] - df.loc[0,'AccelerationX']
                     df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
                     df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
                     df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
-                    df['Speed'] = (df['Acceleration']*df['dt']).cumsum()
-                    df['Distance'] = (df['Speed']*df['dt']).cumsum()
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
+                    
+                        
+                    # Create columns for data cells
+                    # Cells listed in columns are in order of rows
+                    col1, col2, col3 = column.columns(spec=3, width="stretch")
+                
+                    #region Column 1
+                    with col1:
+                        cell_speed(df)
+                        cell_heart_rate(df, True)
+            
+                #endregion Column 1
+            
+                #region Column 2
+                    with col2:
+                        cell_acceleration(df)
+            
+                #endregion Column 2
+            
+                #region Column 3
+                    with col3:
+                        cell_odometry(df)
+                    
+                        #endregion Column 3
                     # Prints data frames
                     print(df.tail(1))
-
-                    # Update live connection to true
-                    live_connection = True
-
-                    # Store df data in file_contents
-                    file_contents = df
-
         if(st.session_state.data_to_csv == False):
-
-            # Update live connection to false
-            live_connection = False
             break
 except Exception as exc:
-    # Declare connection could not be made
     print(exc)
-
-#endregion CAN Input
-
-#region Live Connection Display
-# Widget showing if connection to live data is active
-with st.sidebar:
-    if live_connection is True:
-        st.success("Live")
-    else:
-        st.error("No Data Stream")
-#endregion Live Connection Display
-
-#region Data Visualizer
-
-# Check for valid file contents, a live connection made
-if(file_contents != None and live_connection == True):
-
-    # Create columns for data cells
-    # Cells listed in columns are in order of rows
-    col1, col2, col3 = st.columns(spec=3, width="stretch")
-
-    #region Column 1
-    with col1:
-
-        cell_speed(file_contents)
-
-        cell_heart_rate(file_contents, live_connection=live_connection)
-
-    #endregion Column 1
-
-    #region Column 2
-    with col2:
-
-        cell_acceleration(file_contents)
-
-    #endregion Column 2
-
-    #region Column 3
-    with col3:
-
-        cell_odometry(file_contents)
-
-    #endregion Column 3
-
-#endregion Data Visualizer
-
