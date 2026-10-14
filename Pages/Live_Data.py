@@ -22,8 +22,9 @@ ports = [port.device for port in serial.tools.list_ports.comports()]
 
 st.session_state.data_to_csv = False 
 with st.container():
+    st.header("Live Data", divider=True)
     with st.expander("Live data", expanded=True):
-        st.header("Live Data", divider=True) # page title
+         # page title
         st.sidebar.markdown("Live Data") # sidebar page title
         port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
