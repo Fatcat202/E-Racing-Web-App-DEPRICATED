@@ -20,18 +20,23 @@ date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
 st.session_state.data_to_csv = False 
+with st.container():
+    with st.expander("File System", expanded=True):
+        st.header("Live Data", divider=True) # page title
+        st.sidebar.markdown("Live Data") # sidebar page title
+        port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
-st.header("Live Data", divider=True) # page title
-st.sidebar.markdown("Live Data") # sidebar page title
-port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
+        with st.expander("Advanced options", expanded=False):
+            options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],key=f"graphs")
 
-    
-if port_chosen != "Select Option":
-    print(str(st.session_state.data_to_csv)+"1")
-    if st.button("Start Reading Data"):
-        st.session_state.data_to_csv = True 
-    if st.button("Stop Reading Data"):
-        st.session_state.data_to_csv = False
+
+            
+        if port_chosen != "Select Option":
+            print(str(st.session_state.data_to_csv)+"1")
+            if st.button("Start Reading Data"):
+                st.session_state.data_to_csv = True 
+            if st.button("Stop Reading Data"):
+                st.session_state.data_to_csv = False
 
 # locate the dbc file for decoding instructions 
 dbc_path = os.path.join("CAN", "canmod-gps.dbc")
@@ -107,13 +112,11 @@ try:
                         
                     # Create columns for data cells
                     # Cells listed in columns are in order of rows
-                    options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],)
                     col1, col2, col3 = column.columns(spec=3, width="stretch")
-                
                     #region Column 1
                     with col1:
                         if "Speed" in options:
-                            speed = st.toggle("Distance",key="Speed1")
+                            speed = st.toggle("Distance",key=f"Speed{msg}")
                             if speed:
                                 cell_speed(df,"distance")
                             else:
@@ -122,7 +125,7 @@ try:
                             st.empty()
                 
                         if "Heart" in options:
-                            Heart = st.toggle("Distance",key="Heart1")
+                            Heart = st.toggle("Distance",key=f"Heart{msg}")
                             if Heart:
                                 cell_heart_rate(df,"distance" , True)
                             else:
@@ -135,7 +138,7 @@ try:
                 #region Column 2
                     with col2:
                         if "Acceleration" in options:
-                            acceleration = st.toggle("Distance",key="acceleration")
+                            acceleration = st.toggle("Distance",key=f"acceleration{msg}")
                             if acceleration:
                                 cell_acceleration(df,"distance")
                             else:
