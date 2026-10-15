@@ -57,9 +57,12 @@ with st.container():
         file_chosen = st.selectbox("Select an uploaded file to view:", options = uploaded_options)
 
         # Variable to hold contents of file uploaded for actions
-        file_contents = None
+        if "file_contents" not in st.session_state:
+            file_contents = None
+            st.session_state.file_contents = None
 
-        # If file is selected, allow for action to take place
+
+         # If file is selected, allow for action to take place
         if(file_chosen is not "Select Option"):
             # Declares selected file
             selected_file = file_chosen
@@ -81,8 +84,10 @@ with st.container():
             with st.container(horizontal = True, wrap = False):
 
                 # Button allowing for data to be viewed
-                if st.button(label = "View Data") and selected_file is not None:
-                    file_contents = pd.read_csv(selected_file)
+                if st.button(label="View Data") and selected_file is not None:
+                    st.session_state.file_contents = pd.read_csv(selected_file)
+
+                file_contents = st.session_state.file_contents
 
                 # Download file to local drive
                 st.download_button(label = "Download File", data = data,file_name=file_name)
@@ -101,7 +106,7 @@ with st.container():
 
 # Check for valid file contents
 if(file_contents is not None):
-    
+    options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],)
     # Create columns for data cells
     # Cells listed in columns are in order of rows
     col1, col2, col3 = st.columns(spec=3, width="stretch")
@@ -109,23 +114,46 @@ if(file_contents is not None):
     #region Column 1
     with col1:
 
-        cell_speed(file_contents)
+        if "Speed" in options:
+            speed = st.toggle("Distance",key="Speed")
+            if speed:
+                cell_speed(file_contents,"distance")
+            else:
+                cell_speed(file_contents,"time")
+        else:
+            st.empty()
 
-        cell_heart_rate(file_contents)
+        if "Heart" in options:
+            Heart = st.toggle("Distance",key="Heart")
+            if Heart:
+                cell_heart_rate(file_contents,"distance" , True)
+            else:
+                cell_heart_rate(file_contents,"time" , True)
+        else:
+            st.empty()
 
     #endregion Column 1
 
     #region Column 2
     with col2:
-
-        cell_acceleration(file_contents)
+        if "Acceleration" in options:
+            acceleration = st.toggle("Distance",key="acceleration")
+            if acceleration:
+                cell_acceleration(file_contents,"distance")
+            else:
+                cell_acceleration(file_contents,"time")
+        else:
+            st.empty()
 
     #endregion Column 2
 
     #region Column 3
     with col3:
-
-        cell_odometry(file_contents)
+        if "Odometry" in options:
+            cell_odometry(file_contents)
+        else:
+            st.empty()
+        
 
     #endregion Column 3
 

@@ -15,23 +15,28 @@ import serial.tools.list_ports  # pip install python-can-csscan-serial
 from time import gmtime, strftime
 from datetime import datetime
 
+st.set_page_config(layout="wide")
 
 date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
 st.session_state.data_to_csv = False 
+with st.container():
+    st.header("Live Data", divider=True)
+    with st.expander("Live data", expanded=True):
+         # page title
+        st.sidebar.markdown("Live Data") # sidebar page title
+        port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
-st.header("Live Data", divider=True) # page title
-st.sidebar.markdown("Live Data") # sidebar page title
-port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
-
-    
-if(port_chosen is not "Select Option"):
-    print(str(st.session_state.data_to_csv)+"1")
-    if st.button("Start Reading Data"):
-        st.session_state.data_to_csv = True 
-    if st.button("Stop Reading Data"):
-        st.session_state.data_to_csv = False
+        if port_chosen != "Select Option":
+            with st.expander("Advanced options", expanded=False):
+                options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],key=f"graphs")
+                x_axis = st.multiselect("For which data do you want the x-axis to be Distance",["Heart", "Speed", "Acceleration"],default=[],key=f"graph1")                                 
+            print(str(st.session_state.data_to_csv)+"1")
+            if st.button("Start Reading Data"):
+                st.session_state.data_to_csv = True 
+            if st.button("Stop Reading Data"):
+                st.session_state.data_to_csv = False
 
 # locate the dbc file for decoding instructions 
 dbc_path = os.path.join("CAN", "canmod-gps.dbc")
@@ -101,6 +106,8 @@ try:
                     df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
                     df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
                     df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
+                    df["Distance"] = 0
+                    df["Speed"] = 0
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
                     
@@ -108,23 +115,44 @@ try:
                     # Create columns for data cells
                     # Cells listed in columns are in order of rows
                     col1, col2, col3 = column.columns(spec=3, width="stretch")
-                
                     #region Column 1
                     with col1:
-                        cell_speed(df)
-                        cell_heart_rate(df, True)
+                        if "Speed" in options:
+                            if "Speed" in x_axis:
+                                cell_speed(df,"distance")
+                            else:
+                                cell_speed(df,"time")
+                        else:
+                            st.empty()
+                
+                        if "Heart" in options:
+                            if "Heart" in x_axis:
+                                cell_heart_rate(df,"distance" , True)
+                            else:
+                                cell_heart_rate(df,"time" , True)
+                        else:
+                            st.empty()
             
                 #endregion Column 1
             
                 #region Column 2
                     with col2:
-                        cell_acceleration(df)
+                        if "Acceleration" in options:
+                            if "Acceleration" in x_axis:
+                                cell_acceleration(df,"distance")
+                            else:
+                                cell_acceleration(df,"time")
+                        else:
+                            st.empty()
             
                 #endregion Column 2
             
                 #region Column 3
                     with col3:
-                        cell_odometry(df)
+                        if "Odometry" in options:
+                            cell_odometry(df)
+                        else:
+                            st.empty()
                     
                         #endregion Column 3
                     # Prints data frames
