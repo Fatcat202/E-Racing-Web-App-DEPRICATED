@@ -83,7 +83,7 @@ class CANdecoder:
 # connect to the CANmod.gps device
 try:
     while (st.session_state.data_to_csv == True):
-        with can.Bus(interface="csscan_serial", channel="COM5") as bus:
+        with can.Bus(interface="csscan_serial", channel=port_chosen) as bus:
             # continuously listen for incoming frames (messages)
             canmod_gps = CANdecoder(dbc_path)
             for msg in bus:
