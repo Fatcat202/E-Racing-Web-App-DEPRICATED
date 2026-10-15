@@ -6,6 +6,11 @@ import can # pip install can
 import streamlit as st # pip install streamlit
 import serial.tools.list_ports # pip install pyserial (visit this for mre on pyserial (https://pyserial.readthedocs.io/en/latest/tools.html#module-serial.tools.list_ports)and(https://www.pyserial.com/docs/api-reference))
 # pip install python-can-csscan-serial for interface
+from __future__ import absolute_import
+
+import glob
+import os
+from serial.tools import list_ports_common
 
 st.header("CAN data", divider=True) # page title
 st.sidebar.markdown("CAN") # sidebar page title
@@ -24,14 +29,14 @@ elif COM_port == "Select Option":
 else:
     st.success ("Port "+COM_port+" Selected") # if you select a port it will say port selected
 
-Important_messages = {
-    "speed": ("speed"),
-    "IMU": ("AccelerationX", "AngularRateX"),
-    "odometer": ("DistanceTotal"),
-    "time": ("Epoch"),
-    "position": ("Latitude", "Longitude"),
-    "information": ("Satellites")
-}
+#Important_messages = {
+ #   "speed": ("speed"),
+  #  "IMU": ("AccelerationX", "AngularRateX"),
+   # "odometer": ("DistanceTotal"),
+    #"time": ("Epoch"),
+#    "position": ("Latitude", "Longitude"),
+ #   "information": ("Satellites")
+#}
 
 # locate the dbc file for decoding instructions 
 dbc_path = os.path.join("CAN", "canmod-gps.dbc")
@@ -97,7 +102,105 @@ try:
     with can.Bus(interface="csscan_serial", channel=COM_port) as bus:  # COM port and interface between CAN and PC
         refresh_interval = 1  # how many seconds to wait between table updates
         last_refresh = time.monotonic() # records the time of the last table update
+except Exception as exc:
+    print(exc)
 
+# region linux serial port
+class SysFS(list_ports_common.ListPortInfo):
+    """Wrapper for easy sysfs access and device info"""
+
+    def __init__(self, device):
+        super(SysFS, self).__init__(device)
+        # special handling for links
+        if device is not None and os.path.islink(device):
+            device = os.path.realpath(device)
+            is_link = True
+        else:
+            is_link = False
+        self.usb_device_path = None
+        if os.path.exists('/sys/class/tty/{}/device'.format(self.name)):
+            self.device_path = os.path.realpath('/sys/class/tty/{}/device'.format(self.name))
+            self.subsystem = os.path.basename(os.path.realpath(os.path.join(self.device_path, 'subsystem')))
+        else:
+            self.device_path = None
+            self.subsystem = None
+        # check device type
+        if self.subsystem == 'usb-serial':
+            self.usb_interface_path = os.path.dirname(self.device_path)
+        elif self.subsystem == 'usb':
+            self.usb_interface_path = self.device_path
+        else:
+            self.usb_interface_path = None
+        # fill-in info for USB devices
+        if self.usb_interface_path is not None:
+            self.usb_device_path = os.path.dirname(self.usb_interface_path)
+
+            try:
+                num_if = int(self.read_line(self.usb_device_path, 'bNumInterfaces'))
+            except ValueError:
+                num_if = 1
+
+            self.vid = int(self.read_line(self.usb_device_path, 'idVendor'), 16)
+            self.pid = int(self.read_line(self.usb_device_path, 'idProduct'), 16)
+            self.serial_number = self.read_line(self.usb_device_path, 'serial')
+            if num_if > 1:  # multi interface devices like FT4232
+                self.location = os.path.basename(self.usb_interface_path)
+            else:
+                self.location = os.path.basename(self.usb_device_path)
+
+            self.manufacturer = self.read_line(self.usb_device_path, 'manufacturer')
+            self.product = self.read_line(self.usb_device_path, 'product')
+            self.interface = self.read_line(self.usb_interface_path, 'interface')
+
+        if self.subsystem in ('usb', 'usb-serial'):
+            self.description = self.usb_description()
+            self.hwid = self.usb_info()
+
+        #~ elif self.subsystem in ('pnp', 'amba'):  # PCI based devices, raspi
+        elif self.subsystem == 'pnp':  # PCI based devices
+            self.description = self.name
+            self.hwid = self.read_line(self.device_path, 'id')
+        elif self.subsystem == 'amba':  # raspi
+            self.description = self.name
+            self.hwid = os.path.basename(self.device_path)
+
+        if is_link:
+            self.hwid += ' LINK={}'.format(device)
+
+    def read_line(self, *args):
+        """\
+        Helper function to read a single line from a file.
+        One or more parameters are allowed, they are joined with os.path.join.
+        Returns None on errors..
+        """
+        try:
+            with open(os.path.join(*args)) as f:
+                line = f.readline().strip()
+            return line
+        except IOError:
+            return None
+
+
+def comports(include_links=False, hide_subsystems=[]):
+    devices = set()
+    with open('/proc/tty/drivers') as drivers:
+        for driver in drivers.readlines():
+            items = driver.strip().split()
+            if items[4] == 'serial':
+                devices.update(glob.glob(items[1]+'*'))
+
+    if include_links:
+        devices.update(list_ports_common.list_links(devices))
+    return [info
+            for info in [SysFS(d) for d in devices]
+            if info.subsystem not in hide_subsystems]
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test
+if __name__ == '__main__':
+    for info in sorted(comports()):
+        print("{0}: {0.subsystem}".format(info))
+# end region linux serial port 
         # continuously listen for incoming frames (messages)
         canmod_gps = CANdecoder(dbc_path)  # decode file in dbc_path
         for msg in bus:
@@ -137,5 +240,3 @@ try:
         #placeholder1.metric(col1)
         #st.write(col1)
         #f"{col1:.1f}"
-except Exception as exc:
-    print(exc)
