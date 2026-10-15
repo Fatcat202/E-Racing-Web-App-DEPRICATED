@@ -20,7 +20,14 @@ st.set_page_config(layout="wide")
 date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 ports = [port.device for port in serial.tools.list_ports.comports()]
 
-st.session_state.data_to_csv = False 
+if "data_to_csv" not in st.session_state:
+    st.session_state.data_to_csv = False
+
+if "graphs" not in st.session_state:
+    st.session_state.graphs = ["Speed", "Acceleration", "Odometry"]
+
+if "graph1" not in st.session_state:
+    st.session_state.graph1 = [] 
 with st.container():
     st.header("Live Data", divider=True)
     with st.expander("Live data", expanded=True):
@@ -30,8 +37,16 @@ with st.container():
 
         if port_chosen != "Select Option":
             with st.expander("Advanced options", expanded=False):
-                options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],key=f"graphs")
-                x_axis = st.multiselect("For which data do you want the x-axis to be Distance",["Heart", "Speed", "Acceleration"],default=[],key=f"graph1")                                 
+                options = st.multiselect(
+                    "What data do you need",
+                    ["Heart", "Speed", "Acceleration", "Odometry"],
+                    key="graphs"
+                )
+                x_axis = st.multiselect(
+                    "For which data do you want the x-axis to be Distance",
+                    ["Heart", "Speed", "Acceleration"],
+                    key="graph1"
+                )                               
             print(str(st.session_state.data_to_csv)+"1")
             if st.button("Start Reading Data"):
                 st.session_state.data_to_csv = True 
