@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import os # pip install os
 from cantools import database # pip install cantools
 import time # pip install time 
@@ -5,8 +7,8 @@ import pandas as pd
 import can # pip install can
 import streamlit as st # pip install streamlit
 import serial.tools.list_ports # pip install pyserial (visit this for mre on pyserial (https://pyserial.readthedocs.io/en/latest/tools.html#module-serial.tools.list_ports)and(https://www.pyserial.com/docs/api-reference))
+import sys
 # pip install python-can-csscan-serial for interface
-from __future__ import absolute_import
 
 import glob
 import os
@@ -15,19 +17,6 @@ from serial.tools import list_ports_common
 st.header("CAN data", divider=True) # page title
 st.sidebar.markdown("CAN") # sidebar page title
 
-
-portl = serial.tools.list_ports.comports() # what COM ports does this device have 
-
-available_ports = [port.device for port in portl # a filter to keep only available ports (connected ports)
-    if "USB" in port.description # keep only available ports with description USB to keep only USB ports
-    ]
-COM_port = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ available_ports) # selection interface and available ports to choose from
-if not available_ports:
-    st.error ("No COM ports are currently connected") # if no ports are connected to computer display this 
-elif COM_port == "Select Option":
-    st.success ("please choose a COM port") # select a port from the available ports
-else:
-    st.success ("Port "+COM_port+" Selected") # if you select a port it will say port selected
 
 #Important_messages = {
  #   "speed": ("speed"),
@@ -96,15 +85,6 @@ class CANdecoder:
 
 #end region optional filter
 
-# connect to the CANmod.gps device
-try:
-    placeholderdf = st.empty() # creates a space on the page that can be updated with new data
-    with can.Bus(interface="csscan_serial", channel=COM_port) as bus:  # COM port and interface between CAN and PC
-        refresh_interval = 1  # how many seconds to wait between table updates
-        last_refresh = time.monotonic() # records the time of the last table update
-except Exception as exc:
-    print(exc)
-
 # region linux serial port
 class SysFS(list_ports_common.ListPortInfo):
     """Wrapper for easy sysfs access and device info"""
@@ -121,6 +101,7 @@ class SysFS(list_ports_common.ListPortInfo):
         if os.path.exists('/sys/class/tty/{}/device'.format(self.name)):
             self.device_path = os.path.realpath('/sys/class/tty/{}/device'.format(self.name))
             self.subsystem = os.path.basename(os.path.realpath(os.path.join(self.device_path, 'subsystem')))
+            
         else:
             self.device_path = None
             self.subsystem = None
@@ -194,6 +175,39 @@ def comports(include_links=False, hide_subsystems=[]):
     return [info
             for info in [SysFS(d) for d in devices]
             if info.subsystem not in hide_subsystems]
+
+# gather standard USB ports on all platforms and add the Linux serial devices
+# discovered from sysfs so both appear in the same selector.
+portl = serial.tools.list_ports.comports()
+available_ports = [
+    port.device
+    for port in portl
+    if "USB" in (port.description or "")
+]
+if sys.platform.startswith("linux"):
+    available_ports.extend(port.device for port in comports())
+available_ports = list(dict.fromkeys(available_ports))
+
+with st.expander("Available serial ports"):
+    COM_port = st.selectbox(
+        "Select a serial port:",
+        options=["Select Option"] + available_ports,
+    )
+    if not available_ports:
+        st.error("No COM ports are currently connected")
+    elif COM_port == "Select Option":
+        st.success("Please choose a COM port")
+    else:
+        st.success("Port " + COM_port + " selected")
+
+# connect to the CANmod.gps device
+try:
+    placeholderdf = st.empty() # creates a space on the page that can be updated with new data
+    with can.Bus(interface="csscan_serial", channel=COM_port) as bus:  # COM port and interface between CAN and PC
+        refresh_interval = 1  # how many seconds to wait between table updates
+        last_refresh = time.monotonic() # records the time of the last table update
+except Exception as exc:
+    print(exc)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # test
