@@ -14,11 +14,15 @@ import can                      # pip install python-can
 import serial.tools.list_ports  # pip install python-can-csscan-serial
 from time import gmtime, strftime
 from datetime import datetime
+from streamlit_autorefresh import st_autorefresh # pip install streamlit-autorefresh
 
 st.set_page_config(layout="wide")
 
+# Automatically rerun the Streamlit script every 0.5 seconds
+# to check if any new ports have been plugged in.
+st_autorefresh(interval=500, limit=None, key="port_scanner_refresh")
+
 date_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-ports = [port.device for port in serial.tools.list_ports.comports()]
 
 if "data_to_csv" not in st.session_state:
     st.session_state.data_to_csv = False
@@ -33,6 +37,8 @@ with st.container():
     with st.expander("Live data", expanded=True):
          # page title
         st.sidebar.markdown("Live Data") # sidebar page title
+
+        ports = [port.device for port in serial.tools.list_ports.comports()]
         port_chosen = st.selectbox("Select an uploaded file to view:", options = ["Select Option"]+ports)
 
         if port_chosen != "Select Option":
@@ -47,7 +53,7 @@ with st.container():
                     ["Heart", "Speed", "Acceleration"],
                     key="graph1"
                 )                               
-            print(str(st.session_state.data_to_csv)+"1")
+
             if st.button("Start Reading Data"):
                 st.session_state.data_to_csv = True 
             if st.button("Stop Reading Data"):
