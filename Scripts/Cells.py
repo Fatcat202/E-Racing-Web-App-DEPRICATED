@@ -18,7 +18,7 @@ def cell_heart_rate(file_contents, x_axis, live_connection=False):
             if x_axis == "time":
                 HR_chart = st.line_chart(data=file_contents, x="Time", y="Heart Rate" , x_label="Time (S)")
             elif x_axis == "distance":
-                HR_chart = st.line_chart(data=file_contents, x="Distance", y="Heart Rate" , x_label="Distance (m)")
+                HR_chart = st.line_chart(data=file_contents, x="DistanceTrip", y="Heart Rate" , x_label="Distance (m)")
 
             if(live_connection == True):
                 # Numerical input for driver age
@@ -54,7 +54,7 @@ def cell_odometry(file_contents):
             st.error("Error: Odometry Data Not Found")
         else:
             # Creating odometry chart
-            odometry_chart = st.line_chart(data=file_contents, x="time", y="Distance", x_label="Time (s)")
+            odometry_chart = st.line_chart(data=file_contents, x="time", y="DistanceTrip", x_label="Time (s)")
 #endregion Odometry Data
 
 #region Acceleration Data
@@ -69,9 +69,9 @@ def cell_acceleration(file_contents, x_axis):
         else:
             # Creating acceleration chart
             if x_axis == "time":
-                accel_chart = st.line_chart(data=file_contents, x="time", y="Acceleration", x_label="Time (s)")
+                accel_chart = st.line_chart(data=file_contents, x="time", y=["Acceleration",'AccelerationX','AccelerationY','AccelerationZ'], x_label="Time (s)")
             elif x_axis == "distance":
-                accel_chart = st.line_chart(data=file_contents, x="Distance", y="Acceleration", x_label="Distance (m)")
+                accel_chart = st.line_chart(data=file_contents, x="DistanceTrip", y=["Acceleration",'AccelerationX','AccelerationY','AccelerationZ'], x_label="Distance (m)")
 #endregion Acceleration Data
 
 #region Speed Data
@@ -86,7 +86,7 @@ def cell_speed(file_contents, x_axis):
             if x_axis == "time":
                 accel_chart = st.line_chart(data=file_contents, x="time", y="Speed", x_label="Time (s)")
             elif x_axis == "distance":
-                accel_chart = st.line_chart(data=file_contents, x="Distance", y="Speed", x_label="Distance (m)")
+                accel_chart = st.line_chart(data=file_contents, x="DistanceTrip", y="Speed", x_label="Distance (m)")
 #endregion Speed Data
 
 #region Attitude Data

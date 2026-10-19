@@ -121,8 +121,6 @@ try:
                     df['AccelerationY'] = df['AccelerationY'] - df.loc[0,'AccelerationY']
                     df['AccelerationZ'] = df['AccelerationZ'] - df.loc[0,'AccelerationZ']
                     df['Acceleration'] = (df['AccelerationX']**2 +df['AccelerationY']**2 +df['AccelerationZ']**2)**0.5
-                    df["Distance"] = 0
-                    df["Speed"] = 0
                     name = f"Trial_Data/CANmod_gps_data{date_time}.csv"
                     df.to_csv(str(name),index=False,encoding='utf-8')
                     
