@@ -99,4 +99,80 @@ def cell_attitude(file_contents):
         else:
             # Creating speed chart
             speed_graph = st.line_chart(data=file_contents, x="time", y=["Heading","Pitch","Roll"], x_label="Time (s)", y_label="Attitude")
-#endregion Speed Data
+#endregion Attutide Data
+
+#region Motor Data
+#region Current A(RMS) Data
+def cell_motor_current(file_contents):
+    with st.container(border=True):
+        # Pass through file contents, normally selected_file_contents
+
+        st.header("Current Data", text_alignment="center")
+        # Check if necessary data types exist
+        if(not "1. Current A(RMS) (1)" in file_contents or not "1. Velocity RPM (1)" in file_contents):
+            st.error("Error: current Data Not Found")
+        else:
+            # Creating current chart
+            current_chart = st.line_chart(data=file_contents, x="1. Current A(RMS) (1)", y="1. Velocity RPM (1)", x_label="Current A(RMS)", y_label="Velocity RPM")
+#endregion Current A(RMS) Data
+
+#region Motor Temp
+def cell_motor_temp(file_contents):
+    with st.container(border=True):
+        # Pass through file contents, normally selected_file_contents
+
+        st.header("Motor Temp Data", text_alignment="center")
+        # Check if necessary data types exist
+        if(not "1. Motor Temperature/Torque Cutback  (0.00390625)" in file_contents or not "Time (s)" in file_contents):
+            st.error("Error: motor_temp Data Not Found")
+        else:
+            # Creating motor_temp chart
+            motor_temp_chart = st.line_chart(data=file_contents, x="Time (s)", y="1. Motor Temperature/Torque Cutback  (0.00390625)", y_label="Temperautre")
+#endregion Motor Temp
+
+
+#region Capacitor Voltage
+def cell_motor_capacitor_voltage(file_contents):
+    with st.container(border=True):
+        # Pass through file contents, normally selected_file_contents
+
+        st.header("Capacitor Voltage Data", text_alignment="center")
+        # Check if necessary data types exist
+        if(not "1. Current A(RMS) (1)" in file_contents or not "1. Capacitor Voltage V (0.0625)" in file_contents):
+            st.error("Error: capacitor_voltage Data Not Found")
+        else:
+            # Creating capacitor_voltage chart
+            capacitor_voltage_chart = st.line_chart(data=file_contents, x="1. Current A(RMS) (1)", y="1. Capacitor Voltage V (0.0625)", x_label="Current A(RMS)", y_label="Capacitor Voltage")
+#endregion Capacitor Voltage
+
+#region Torque Demand Value
+def cell_motor_torque_demand_value(file_contents):
+    with st.container(border=True):
+        # Pass through file contents, normally selected_file_contents
+
+        st.header("Torque Demand Value Data", text_alignment="center")
+        # Check if necessary data types exist
+        if(not "1. Torque demand value Nm (0.0625)" in file_contents or not "1. Velocity RPM (1)" in file_contents):
+            st.error("Error: torque_demand_value Data Not Found")
+        else:
+            # Creating torque_demand_value chart
+            torque_demand_value_chart = st.line_chart(data=file_contents, x="1. Velocity RPM (1)", y="1. Torque demand value Nm (0.0625)", x_label="Velocity RPM", y_label="Torque Demand Value")
+#endregion Torque Demand Value
+
+#region Torque Actual Value
+def cell_motor_torque_actual_value(file_contents):
+    with st.container(border=True):
+        # Pass through file contents, normally selected_file_contents
+
+        st.header("Torque Actual Value Data", text_alignment="center")
+        # Check if necessary data types exist
+        if(not "1. Torque actual value Nm (0.0625)" in file_contents or not "1. Velocity RPM (1)" in file_contents):
+            st.error("Error: Torque Actual Value Data Not Found")
+        else:
+            # Creating torque_actual_value chart
+            torque_actual_value_chart = st.line_chart(data=file_contents, x="1. Velocity RPM (1)", y="1. Torque actual value Nm (0.0625)", x_label="Velocity RPM", y_label="Torque Actual Value")
+#endregion Torque Actual Value
+
+#endregion Motor Data
+
+

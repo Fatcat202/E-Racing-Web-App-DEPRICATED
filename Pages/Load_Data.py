@@ -103,7 +103,7 @@ with st.container():
 
 # Check for valid file contents
 if(file_contents is not None):
-    options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry"],default=["Speed", "Acceleration", "Odometry"],)
+    options = st.multiselect("What data do you need",["Heart", "Speed", "Acceleration", "Odometry", "Motor Current", "Motor Torque Demand", "Motor Torque Actual", "Motor Temp", "Motor Capacitor Voltage"],default=[],)
     # Create columns for data cells
     # Cells listed in columns are in order of rows
     col1, col2, col3 = st.columns(spec=3, width="stretch")
@@ -111,6 +111,18 @@ if(file_contents is not None):
     #region Column 1
     with col1:
 
+        if "Motor Current" in options:
+            motor_current = st.toggle("Motor Current", key="Motor Current")
+            cell_motor_current(file_contents)
+        else:
+            st.empty()
+
+        if "Motor Torque Demand" in options:
+            motor_current = st.toggle("Motor Torque Demand", key="Motor Torque Demand")
+            cell_motor_torque_demand_value(file_contents)
+        else:
+            st.empty()
+        
         if "Speed" in options:
             speed = st.toggle("Distance",key="Speed")
             if speed:
@@ -133,6 +145,19 @@ if(file_contents is not None):
 
     #region Column 2
     with col2:
+
+        if "Motor Temp" in options:
+            motor_current = st.toggle("Motor Temp", key="Motor Temp")
+            cell_motor_temp(file_contents)
+        else:
+            st.empty()
+
+        if "Motor Torque Actual" in options:
+            motor_current = st.toggle("Motor Torque Actual", key="Motor Torque Actual")
+            cell_motor_torque_actual_value(file_contents)
+        else:
+            st.empty()
+        
         if "Acceleration" in options:
             acceleration = st.toggle("Distance",key="acceleration")
             if acceleration:
@@ -146,6 +171,13 @@ if(file_contents is not None):
 
     #region Column 3
     with col3:
+
+        if "Motor Capacitor Voltage" in options:
+            motor_current = st.toggle("Motor Capacitor Voltage", key="Motor Capacitor Voltage")
+            cell_motor_capacitor_voltage(file_contents)
+        else:
+            st.empty()
+        
         if "Odometry" in options:
             cell_odometry(file_contents)
         else:
